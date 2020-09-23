@@ -1,8 +1,10 @@
+import 'package:blogging_app/login_register/Login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -19,7 +21,6 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
   String _name;
   bool eye_closed=true,_isLoading=false;
   final _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   SpinKitFadingCircle spinkit = SpinKitFadingCircle(
     color: Colors.blue,
     size: 50.0,
@@ -29,16 +30,17 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
   var flushbar;
   void show(String s1) 
   {
-      flushbar = Flushbar(
+    flushbar=Flushbar(
       margin: EdgeInsets.all(8),
       borderRadius: 8,
       duration: Duration(seconds: 3),
       icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text(
+      messageText: Text( 
         s1,
         style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
       ),
       backgroundColor: Colors.black87,
+      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
     );
   }
 
@@ -47,14 +49,13 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
     setState(() {
       _isLoading=true;
     });
+    print(_isLoading);
 
     await FirebaseAuth.instance
     .createUserWithEmailAndPassword(email: _email, password: _pass)
     .then((_user) async{
       await _user.user.sendEmailVerification()
-      .then((_) async{
-        show("Verify yourself by clicking on the link sent via mail");
-        flushbar..show(context);
+      .then((_) async{        
         await FirebaseFirestore.instance
         .collection('users')
         .doc(_user.user.uid)
@@ -65,7 +66,9 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
         .then((_) 
         {
           print("Successfully added to database");
-          flushbar..show(context);
+          setState(() {
+            _isLoading=false;
+          });
         })
         .catchError((e){
           print(e);
@@ -75,13 +78,34 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
         print("An error occured while trying to send email verification");
         print(e.message);
         show("An error occured while trying to send email verification");
-        flushbar..show(context);
+        flushbar.show(context);
       });
     })
-    .catchError((e){
-      show("Something has went wrong!! Try again");
-      flushbar..show(context);
-    });
+    .catchError((signUpError) {
+      print(signUpError.code.toString());
+      if(signUpError.code.toString() == "email-already-in-use")
+      {
+        print(signUpError.code.toString());
+        show("Email already in use!!");
+        flushbar.show(context);
+      }
+      else if(signUpError.code.toString() == "weak-password")
+      {
+        show("Password is weak!!");
+        flushbar.show(context);
+      }
+      else if(signUpError.code.toString() == "invalid-email")
+      {
+        show("email id invalid!!");
+        flushbar.show(context);
+      }
+      else
+      {
+        show("something went wrong!!");
+        flushbar.show(context);
+      }
+    });    
+    print(_isLoading);
   }
 
   Widget _body() 
@@ -213,7 +237,18 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                     if (_formKey.currentState.validate()) {
                       FocusScope.of(context).unfocus();
                       _register().then((_){
-                        Navigator.of(context).pop();
+                        print(_isLoading);
+                        if(_isLoading==false)
+                        {
+                          print(_isLoading);
+                          Navigator.of(context).pop();
+                        }
+                        else 
+                        {
+                          setState(() {
+                            _isLoading=false;
+                          });
+                        }
                       });
                     }
                   },
@@ -230,7 +265,6 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) 
   {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Register",textAlign: TextAlign.center),
         centerTitle: true,

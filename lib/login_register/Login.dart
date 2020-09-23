@@ -9,18 +9,18 @@ import '../main.dart';
 import 'Register.dart';
 
 class Login extends StatefulWidget 
-{
+{  
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login>
 {
-  String _email;
-  String _pass;
+  String _email="";
+  String _pass="";
   bool eye_closed=true,_isLoading=false;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+
   SpinKitFadingCircle spinkit = SpinKitFadingCircle(
     color: Colors.blue,
     size: 50.0,
@@ -124,20 +124,19 @@ class _LoginState extends State<Login>
     });
   }
 
-  // @override
-  // void initState() 
-  // {
-  //   // TODO: implement initState
-  //   super.initState();
-    
-  // }
+  @override
+  void initState() 
+  {
+    // TODO: implement initState
+    super.initState();
+  }
 
-  // @override
-  // void dispose() 
-  // {
-  //   // TODO: implement dispose
-  //   super.dispose();
-  // }
+  @override
+  void dispose() 
+  {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   Widget _body() 
   {
@@ -160,6 +159,7 @@ class _LoginState extends State<Login>
                 SizedBox(height: 15.0,),
                 TextFormField(
                   keyboardType: TextInputType.emailAddress,
+                  initialValue: _email,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white70,
@@ -313,7 +313,6 @@ class _LoginState extends State<Login>
   Widget build(BuildContext context) 
   {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Login",textAlign: TextAlign.center),
         centerTitle: true,

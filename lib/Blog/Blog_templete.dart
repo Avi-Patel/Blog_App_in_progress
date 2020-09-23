@@ -23,7 +23,6 @@ class _BlogTileState extends State<BlogTile> {
   bool _isLoading=false;
   final GlobalKey<FormState> _fbKey1 = GlobalKey<FormState>();
   final GlobalKey<FormState> _fbKey2 = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   SpinKitFadingCircle spinkit = SpinKitFadingCircle(
     color: Colors.blue,
     size: 50.0,
@@ -56,7 +55,7 @@ class _BlogTileState extends State<BlogTile> {
   }
 
   var _docId;
-  Future<void> _addData() async
+  bool _addData()
   {
     User _user= FirebaseAuth.instance.currentUser;    
     Map<String,dynamic> data={
@@ -67,7 +66,7 @@ class _BlogTileState extends State<BlogTile> {
     };
     _docId=DateTime.now().millisecondsSinceEpoch.toString();
 
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
     .collection('${_blog.getType()}')
     .doc(_docId)
     .set(data)
@@ -78,7 +77,9 @@ class _BlogTileState extends State<BlogTile> {
       print(e);
       show("Opps!! Some error occured. Try again");
       flushbar..show(context);
+      return false;
     });
+    return true;
   }
 
   Future<void> _upload() async
@@ -107,15 +108,13 @@ class _BlogTileState extends State<BlogTile> {
         .catchError((e){
           print(e);
           show("Opps!! Some error occured. Try again");
-          flushbar..show(context);
-          return;
+          flushbar.show(context);
         });
       })
       .catchError((e){
         print(e);
         show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
-        return;
+        flushbar.show(context);
       });
     });
   }
@@ -343,7 +342,6 @@ class _BlogTileState extends State<BlogTile> {
   }
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       backgroundColor: Colors.white24,
       appBar: AppBar(
         centerTitle: true,
@@ -388,16 +386,17 @@ class _BlogTileState extends State<BlogTile> {
               setState(() {
                 _isLoading=true;
               });
-              _addData().then((_){
+              var answer=_addData();
+              if(answer==true)
+              {
                 _upload();
-              });
-              show("It may take a while to reflact on home page");
-              flushbar..show(context)
-              .then((_) {
-                Navigator.of(context).pop();  
-              });
+                show("It may take a while to reflact on home page");
+                flushbar.show(context)
+                .then((_) {
+                  Navigator.of(context).pop();  
+                });
+              }              
             }
-            
           }
         ),
       ),

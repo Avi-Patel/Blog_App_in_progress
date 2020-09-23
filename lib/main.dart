@@ -47,7 +47,6 @@ class _HomePageState extends State<HomePage>
   User _user;
   String name = null;
   String email = null;
-  final scaffoldKey = GlobalKey<ScaffoldState>();
 
   var flushbar;
   void show(String s1) 
@@ -82,7 +81,7 @@ class _HomePageState extends State<HomePage>
       });
     print("User logged out");
     show("You are logged out:)");
-    flushbar..show(context);
+    flushbar.show(context);
     _getname();
   }
 
@@ -223,7 +222,6 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       appBar: AppBar(
         title: Text("Hey Bloggers!",textAlign: TextAlign.center),
         centerTitle: true,

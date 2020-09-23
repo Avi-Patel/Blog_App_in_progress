@@ -11,8 +11,6 @@ class VerifyEmail extends StatefulWidget
 
 class _VerifyEmailState extends State<VerifyEmail> 
 {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   var flushbar;
   void show(String s1) 
   {
@@ -49,7 +47,6 @@ class _VerifyEmailState extends State<VerifyEmail>
   Widget build(BuildContext context) 
   {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Verify Email",textAlign: TextAlign.center),
         centerTitle: true,
