@@ -140,169 +140,177 @@ class _LoginState extends State<Login>
 
   Widget _body() 
   {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16.0,0.0,16.0,16.0),
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.account_circle,
-                  color: Colors.white,
-                  size: 100,
-                ),
-                SizedBox(height: 15.0,),
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  initialValue: _email,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white70,
-                    hintText: "Enter Email",
-                    labelText: "Email",
-                    prefixIcon: Icon(
-                      Icons.email,
-                      size: 30.0,
-                    ),
+    return Card(
+      elevation: 5.0,
+      color: Colors.black87,
+      margin: EdgeInsets.all(10.0),
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.blue, width: 1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16.0,32.0,16.0,32.0),
+          child: Center(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.account_circle,
+                    color: Colors.white,
+                    size: 100,
                   ),
-                  validator: (value) {
-                    if (EmailValidator.validate(value) == false) {
-                      return "Enter correct email";
-                    }
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _email = value;
-                    });
-                  },
-                ),
-                SizedBox(height: 10.0),
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white70,
-                    hintText: "Enter Pass",
-                    labelText: "Password",
-                    prefixIcon: Icon(
-                      Icons.lock,
-                      size: 30.0,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        eye_closed==true?
-                        Icons.visibility_off
-                        :
-                        Icons.visibility,
+                  SizedBox(height: 15.0,),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    initialValue: _email,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Enter Email",
+                      labelText: "Email",
+                      prefixIcon: Icon(
+                        Icons.email,
+                        size: 30.0,
                       ),
-                      onPressed: (){
-                        setState(() {
-                          if(eye_closed==true) eye_closed=false;
-                          else eye_closed=true;
-                        });
-                      },
                     ),
+                    validator: (value) {
+                      if (EmailValidator.validate(value) == false) {
+                        return "Enter correct email";
+                      }
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _email = value;
+                      });
+                    },
                   ),
-                  obscureText: eye_closed,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return "Password can not be empty";
+                  SizedBox(height: 10.0),
+                  TextFormField(
+                    keyboardType: TextInputType.visiblePassword,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Enter Pass",
+                      labelText: "Password",
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        size: 30.0,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          eye_closed==true?
+                          Icons.visibility_off
+                          :
+                          Icons.visibility,
+                        ),
+                        onPressed: (){
+                          setState(() {
+                            if(eye_closed==true) eye_closed=false;
+                            else eye_closed=true;
+                          });
+                        },
+                      ),
+                    ),
+                    obscureText: eye_closed,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return "Password can not be empty";
+                      }
+                      if (value.toString().length < 8) {
+                        return "Password should contain atleast 8 characters";
+                      }
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _pass = value;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  FlatButton(
+                    color: Colors.blue,
+                    splashColor: Colors.white,
+                    minWidth: 100.0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Login",
+                          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10.0,),
+                        Icon(
+                          Icons.login_rounded ,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        FocusScope.of(context).unfocus();
+                        _login();
+                      }
                     }
-                    if (value.toString().length < 8) {
-                      return "Password should contain atleast 8 characters";
-                    }
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _pass = value;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                FlatButton(
-                  color: Colors.blue,
-                  splashColor: Colors.white,
-                  minWidth: 100.0,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  ),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                        "Forgot password? ",
+                        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
                       ),
-                      SizedBox(width: 10.0,),
-                      Icon(
-                        Icons.login_rounded ,
-                        color: Colors.white,
-                      )
+                      FlatButton(
+                        color: Colors.blue,
+                        splashColor: Colors.white,
+                        minWidth: 100.0,
+                        child: Text(
+                          "Click Here ",
+                          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: (){
+                          FocusScope.of(context).unfocus();
+                          _forgotpass();
+                        } 
+                      ),
                     ],
                   ),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      FocusScope.of(context).unfocus();
-                      _login();
-                    }
-                  }
-                ),
-                SizedBox(
-                  height: 15.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Forgot password? ",
-                      style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
-                    ),
-                    FlatButton(
-                      color: Colors.blue,
-                      splashColor: Colors.white,
-                      minWidth: 100.0,
-                      child: Text(
-                        "Click Here ",
-                        style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have a account? ",
+                        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
                       ),
-                      onPressed: (){
-                        FocusScope.of(context).unfocus();
-                        _forgotpass();
-                      } 
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 15.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Don't have a account? ",
-                      style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
-                    ),
-                    FlatButton(
-                      color: Colors.blue,
-                      splashColor: Colors.white,
-                      minWidth: 100.0,
-                      child: Text(
-                        "Register",
-                        style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                      FlatButton(
+                        color: Colors.blue,
+                        splashColor: Colors.white,
+                        minWidth: 100.0,
+                        child: Text(
+                          "Register",
+                          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => Register()));
+                        }
                       ),
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => Register()));
-                      }
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -314,26 +322,22 @@ class _LoginState extends State<Login>
   {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login",textAlign: TextAlign.center),
+        title: Text(
+          "Login",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.blue),
+        ),
         centerTitle: true,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            colorFilter: ColorFilter.mode(Colors.white70, BlendMode.softLight),
-            image: AssetImage(
-              "assets/login_back.jpg",
-            ),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: _isLoading==true?
-        Center(child: spinkit)
-        :
-        SingleChildScrollView(
+      backgroundColor: Colors.white24,
+      body:_isLoading==true?
+      Center(child: spinkit)
+      :
+      Center(
+        child: SingleChildScrollView(
           child: _body(),
         ),
-      ),
+      )
     );
   }
 }

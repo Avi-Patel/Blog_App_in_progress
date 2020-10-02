@@ -110,150 +110,158 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
 
   Widget _body() 
   {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(16.0,0.0,16.0,16.0),
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.account_circle,
-                  color: Colors.white,
-                  size: 100,
-                ),
-                SizedBox(height: 15.0,),
-                TextFormField(
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white70,
-                    hintText: "Enter full name",
-                    labelText: "Name",
-                    prefixIcon: Icon(
-                      Icons.perm_identity_sharp,
-                      size: 30.0,
-                    ),
+    return Card(
+      elevation: 5.0,
+      color: Colors.black87,
+      margin: EdgeInsets.all(10.0),
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.blue, width: 1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16.0,32.0,16.0,32.0),
+          child: Center(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.account_circle,
+                    color: Colors.white,
+                    size: 100,
                   ),
-                  validator: (value) {
-                    if (value.toString().length == 0) {
-                      return "Name can not be empty!";
-                    }
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _name = value;
-                    });
-                  },
-                ),
-                SizedBox(height: 15.0,),
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white70,
-                    hintText: "Enter gmail id",
-                    labelText: "Email",
-                    prefixIcon: Icon(
-                      Icons.email,
-                      size: 30.0,
-                    ),
-                  ),
-                  validator: (value) {
-                    if (EmailValidator.validate(value) == false) {
-                      return "Enter correct email";
-                    }
-                  },
-                  onChanged: (String value) {
-                    _email = value;
-                    // print(_email);
-                  },
-                ),
-                SizedBox(height: 15.0,),
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white70,
-                    hintText: "Enter Pass",
-                    labelText: "Password",
-                    prefixIcon: Icon(
-                      Icons.lock,
-                      size: 30.0,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        eye_closed==true?
-                        Icons.visibility_off
-                        :
-                        Icons.visibility,
+                  SizedBox(height: 15.0,),
+                  TextFormField(
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Enter full name",
+                      labelText: "Name",
+                      prefixIcon: Icon(
+                        Icons.perm_identity_sharp,
+                        size: 30.0,
                       ),
-                      onPressed: (){
-                        setState(() {
-                          if(eye_closed==true) eye_closed=false;
-                          else eye_closed=true;
-                        });
-                      },
                     ),
-                  ),
-                  obscureText: eye_closed,
-                  validator: (value) {
-                    if (value.toString().length==0) {
-                      return "Password can not be empty";
-                    }
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _pass = value;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                FlatButton(
-                  color: Colors.blue,
-                  splashColor: Colors.white,
-                  minWidth: 100.0,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Register",
-                        style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(width: 10.0,),
-                      Icon(
-                        Icons.person_add_outlined,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      FocusScope.of(context).unfocus();
-                      _register().then((_){
-                        print(_isLoading);
-                        if(_isLoading==false)
-                        {
-                          print(_isLoading);
-                          Navigator.of(context).pop();
-                        }
-                        else 
-                        {
-                          setState(() {
-                            _isLoading=false;
-                          });
-                        }
+                    validator: (value) {
+                      if (value.toString().length == 0) {
+                        return "Name can not be empty!";
+                      }
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _name = value;
                       });
-                    }
-                  },
-                ),
-              ],
+                    },
+                  ),
+                  SizedBox(height: 15.0,),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Enter gmail id",
+                      labelText: "Email",
+                      prefixIcon: Icon(
+                        Icons.email,
+                        size: 30.0,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (EmailValidator.validate(value) == false) {
+                        return "Enter correct email";
+                      }
+                    },
+                    onChanged: (String value) {
+                      _email = value;
+                      // print(_email);
+                    },
+                  ),
+                  SizedBox(height: 15.0,),
+                  TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: "Enter Pass",
+                      labelText: "Password",
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        size: 30.0,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          eye_closed==true?
+                          Icons.visibility_off
+                          :
+                          Icons.visibility,
+                        ),
+                        onPressed: (){
+                          setState(() {
+                            if(eye_closed==true) eye_closed=false;
+                            else eye_closed=true;
+                          });
+                        },
+                      ),
+                    ),
+                    obscureText: eye_closed,
+                    validator: (value) {
+                      if (value.toString().length==0) {
+                        return "Password can not be empty";
+                      }
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _pass = value;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  FlatButton(
+                    color: Colors.blue,
+                    splashColor: Colors.white,
+                    minWidth: 100.0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Register",
+                          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10.0,),
+                        Icon(
+                          Icons.person_add_outlined,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        FocusScope.of(context).unfocus();
+                        _register().then((_){
+                          print(_isLoading);
+                          if(_isLoading==false)
+                          {
+                            print(_isLoading);
+                            Navigator.of(context).pop();
+                          }
+                          else 
+                          {
+                            setState(() {
+                              _isLoading=false;
+                            });
+                          }
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -266,26 +274,22 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
   {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Register",textAlign: TextAlign.center),
+        title: Text(
+          "Register",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.blue),
+        ),
         centerTitle: true,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            colorFilter: ColorFilter.mode(Colors.white70, BlendMode.softLight),
-            image: AssetImage(
-              "assets/login_back.jpg",
-            ),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: _isLoading==true?
-        Center(child: spinkit)
-        :
-        SingleChildScrollView(
+      backgroundColor: Colors.white24,
+      body:_isLoading==true?
+      Center(child: spinkit)
+      :
+      Center(
+        child: SingleChildScrollView(
           child: _body(),
         ),
-      ),
+      )
     );
   }
 }
