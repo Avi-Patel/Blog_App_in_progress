@@ -265,8 +265,13 @@ class _HomePageState extends State<HomePage>
             image: AssetImage(
               "assets/background_image.jpg",
             ),
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.7), 
+              BlendMode.darken
+            ),
             fit: BoxFit.cover,
           ),
+
         ),
         child: Container(
           height: MediaQuery.of(context).size.height,

@@ -112,7 +112,7 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
   {
     return Card(
       elevation: 5.0,
-      color: Colors.black87,
+      color: Colors.black,
       margin: EdgeInsets.all(4.0),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Colors.blue, width: 1),
@@ -310,7 +310,7 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
         ),
         centerTitle: true,
       ),
-      backgroundColor: Colors.white24,
+      backgroundColor: Colors.black,
       body:_isLoading==true?
       Center(child: spinkit)
       :
