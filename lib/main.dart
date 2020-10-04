@@ -177,7 +177,7 @@ class _HomePageState extends State<HomePage>
                     onTap: () => name == null ? _singin() : _signOut(),
                   ),
                   Divider(
-                    color: Colors.green,
+                    color: Colors.blue,
                     height: 0.0,
                   ),
                   name != null? ListTile(
@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage>
                   : Container(),
 
                   Divider(
-                    color: Colors.green,
+                    color: Colors.blue,
                     height: 0.0,  
                   ),
                   ListTile(
@@ -223,25 +223,40 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Hey Bloggers!",textAlign: TextAlign.center),
+        title: Text(
+          "Hey Bloggers!",
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.blue),
+        ),
         centerTitle: true,
       ),
       drawer: _drawer(),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FloatingActionButton(
-          elevation: 0.0,
-          backgroundColor: Colors.black,
-          splashColor: Colors.white,
-          child:Icon(
-            Icons.add_circle,
-            size: 40.0,
-            color: Colors.white,
-          ),
-          onPressed: (){
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => BlogTile()));
-          },
+      floatingActionButton: FlatButton(
+        color: Colors.blue,
+        splashColor: Colors.white,
+        minWidth: 100.0,
+        height: 40.0,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.black, width: 2),
+          borderRadius: BorderRadius.circular(10),
         ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Create New Blog",
+              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 10.0,),
+            Icon(
+              Icons.create,
+              color: Colors.white,
+            )
+          ],
+        ),
+        onPressed: (){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => BlogTile()));
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Container(

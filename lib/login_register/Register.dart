@@ -113,7 +113,7 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
     return Card(
       elevation: 5.0,
       color: Colors.black87,
-      margin: EdgeInsets.all(10.0),
+      margin: EdgeInsets.all(4.0),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Colors.blue, width: 1),
         borderRadius: BorderRadius.circular(10),
@@ -141,9 +141,17 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                       fillColor: Colors.white,
                       hintText: "Enter full name",
                       labelText: "Name",
+                      labelStyle: TextStyle(
+                        backgroundColor: Colors.white,
+                      ),
                       prefixIcon: Icon(
                         Icons.perm_identity_sharp,
                         size: 30.0,
+                      ),
+                      border: new OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -165,9 +173,17 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                       fillColor: Colors.white,
                       hintText: "Enter gmail id",
                       labelText: "Email",
+                      labelStyle: TextStyle(
+                        backgroundColor: Colors.white,
+                      ),
                       prefixIcon: Icon(
                         Icons.email,
                         size: 30.0,
+                      ),
+                      border: new OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -188,6 +204,9 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                       fillColor: Colors.white,
                       hintText: "Enter Pass",
                       labelText: "Password",
+                      labelStyle: TextStyle(
+                        backgroundColor: Colors.white,
+                      ),
                       prefixIcon: Icon(
                         Icons.lock,
                         size: 30.0,
@@ -206,6 +225,11 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                           });
                         },
                       ),
+                      border: new OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      ),
                     ),
                     obscureText: eye_closed,
                     validator: (value) {
@@ -220,14 +244,19 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                     },
                   ),
                   SizedBox(
-                    height: 20.0,
+                    height: 40.0,
                   ),
                   FlatButton(
                     color: Colors.blue,
                     splashColor: Colors.white,
-                    minWidth: 100.0,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.blue, width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    height:40.0,
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "Register",

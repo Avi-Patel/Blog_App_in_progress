@@ -358,47 +358,47 @@ class _BlogTileState extends State<BlogTile> {
         ),
         leading: Container(),
       ),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
+      floatingActionButton: FlatButton(
+        color: Colors.green,
+        splashColor: Colors.white,
+        minWidth: 100.0,
+        height: 40.0,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.black, width: 2),
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: FlatButton(
-          color: Colors.green,
-          splashColor: Colors.white,
-          minWidth: 100.0,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Upload",
-                style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
-              ),
-              SizedBox(width: 10.0,),
-              Icon(
-                Icons.upload_sharp,
-                color: Colors.white,
-              )
-            ],
-          ),
-          onPressed: () {
-            if(_fbKey1.currentState.validate() && _fbKey2.currentState.validate())
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Upload",
+              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 10.0,),
+            Icon(
+              Icons.upload_sharp,
+              color: Colors.white,
+            )
+          ],
+        ),
+        onPressed: () {
+          if(_fbKey1.currentState.validate() && _fbKey2.currentState.validate())
+          {
+            setState(() {
+              _isLoading=true;
+            });
+            var answer=_addData();
+            if(answer==true)
             {
-              setState(() {
-                _isLoading=true;
+              _upload();
+              show("It may take a while to reflact on home page");
+              flushbar.show(context)
+              .then((_) {
+                Navigator.of(context).pop();  
               });
-              var answer=_addData();
-              if(answer==true)
-              {
-                _upload();
-                show("It may take a while to reflact on home page");
-                flushbar.show(context)
-                .then((_) {
-                  Navigator.of(context).pop();  
-                });
-              }              
-            }
+            }              
           }
-        ),
+        }
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
       body:_isLoading==true?

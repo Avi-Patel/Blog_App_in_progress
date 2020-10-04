@@ -143,7 +143,7 @@ class _LoginState extends State<Login>
     return Card(
       elevation: 5.0,
       color: Colors.black87,
-      margin: EdgeInsets.all(10.0),
+      margin: EdgeInsets.all(4.0),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Colors.blue, width: 1),
         borderRadius: BorderRadius.circular(10),
@@ -172,10 +172,26 @@ class _LoginState extends State<Login>
                       fillColor: Colors.white,
                       hintText: "Enter Email",
                       labelText: "Email",
+                      labelStyle: TextStyle(
+                        backgroundColor: Colors.white,
+                      ),
                       prefixIcon: Icon(
                         Icons.email,
                         size: 30.0,
                       ),
+                      border: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      ),
+                      enabled: true,
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                        borderSide: BorderSide(color:Colors.red),
+                      ),
+                      
                     ),
                     validator: (value) {
                       if (EmailValidator.validate(value) == false) {
@@ -194,8 +210,11 @@ class _LoginState extends State<Login>
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
-                      hintText: "Enter Pass",
+                      hintText: "Enter Password",
                       labelText: "Password",
+                      labelStyle: TextStyle(
+                        backgroundColor: Colors.white,
+                      ),
                       prefixIcon: Icon(
                         Icons.lock,
                         size: 30.0,
@@ -214,6 +233,11 @@ class _LoginState extends State<Login>
                           });
                         },
                       ),
+                      border: new OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      ),
                     ),
                     obscureText: eye_closed,
                     validator: (value) {
@@ -230,15 +254,62 @@ class _LoginState extends State<Login>
                       });
                     },
                   ),
+
                   SizedBox(
-                    height: 10.0,
+                    height: 20.0,
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children:[
+                      GestureDetector(
+                        child: Text(
+                          "Forgot password? ",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                          ),
+                          softWrap: true,
+                        ),
+                        onTap: (){
+                          FocusScope.of(context).unfocus();
+                          _forgotpass();
+                        } ,
+                      ),
+                      GestureDetector(
+                        child: Text(
+                          "Register",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (context) => Register()));
+                        },
+                      ),
+                      
+                    ],
+                  ),
+
+                  SizedBox(
+                    height:50.0,
                   ),
                   FlatButton(
                     color: Colors.blue,
                     splashColor: Colors.white,
-                    minWidth: 100.0,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.blue, width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    height:40.0,
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "Login",
@@ -261,54 +332,54 @@ class _LoginState extends State<Login>
                   SizedBox(
                     height: 15.0,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Forgot password? ",
-                        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
-                      ),
-                      FlatButton(
-                        color: Colors.blue,
-                        splashColor: Colors.white,
-                        minWidth: 100.0,
-                        child: Text(
-                          "Click Here ",
-                          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
-                        ),
-                        onPressed: (){
-                          FocusScope.of(context).unfocus();
-                          _forgotpass();
-                        } 
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15.0,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have a account? ",
-                        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
-                      ),
-                      FlatButton(
-                        color: Colors.blue,
-                        splashColor: Colors.white,
-                        minWidth: 100.0,
-                        child: Text(
-                          "Register",
-                          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
-                        ),
-                        onPressed: () {
-                          FocusScope.of(context).unfocus();
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => Register()));
-                        }
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Text(
+                  //       "Forgot password? ",
+                  //       style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
+                  //     ),
+                  //     FlatButton(
+                  //       color: Colors.blue,
+                  //       splashColor: Colors.white,
+                  //       minWidth: 100.0,
+                  //       child: Text(
+                  //         "Click Here ",
+                  //         style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                  //       ),
+                  //       onPressed: (){
+                  //         FocusScope.of(context).unfocus();
+                  //         _forgotpass();
+                  //       } 
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(
+                  //   height: 15.0,
+                  // ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     Text(
+                  //       "Don't have a account? ",
+                  //       style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
+                  //     ),
+                  //     FlatButton(
+                  //       color: Colors.blue,
+                  //       splashColor: Colors.white,
+                  //       minWidth: 100.0,
+                  //       child: Text(
+                  //         "Register",
+                  //         style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                  //       ),
+                  //       onPressed: () {
+                  //         FocusScope.of(context).unfocus();
+                  //         Navigator.of(context).push(
+                  //           MaterialPageRoute(builder: (context) => Register()));
+                  //       }
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
