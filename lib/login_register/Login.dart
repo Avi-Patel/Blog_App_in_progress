@@ -399,8 +399,7 @@ class _LoginState extends State<Login>
           style: TextStyle(color: Colors.blue),
         ),
         centerTitle: true,
-      ),
-      backgroundColor: Colors.white24,
+      ),      
       body:_isLoading==true?
       Center(child: spinkit)
       :
