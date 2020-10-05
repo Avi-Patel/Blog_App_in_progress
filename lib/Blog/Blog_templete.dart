@@ -129,7 +129,7 @@ class _BlogTileState extends State<BlogTile> {
     })
     .catchError((e){
       print(e);
-      show("Opps!! Some error occured. Try again");
+      show("You did not selected any photo");
       flushbar..show(context);
     });
   }
@@ -301,7 +301,20 @@ class _BlogTileState extends State<BlogTile> {
 
 
         _blog.getSize()==5? 
-        _addText("You have added all 5 photos!! Drag a photo left/right inorder to delete:)",10.0,Colors.red): _addphoto(),
+        _addText(
+          "You have added all 5 photos!! Drag a photo left/right inorder to delete:)",
+          10.0,Colors.red
+        )
+        : _addphoto(),
+
+        _blog.getSize()<5?
+        _addText(
+          "You can add upto 5 photos. Drag a photo left/right inorder to delete:)",
+          10.0,Colors.blue
+        )
+        : SizedBox(
+          height: 0.0,          
+        ),
 
         SizedBox(height:10.0),
 
