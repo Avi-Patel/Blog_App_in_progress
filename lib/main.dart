@@ -429,6 +429,8 @@ class _HomePageState extends State<HomePage> {
               color: Colors.black,
               child: Container(
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(color: Colors.white),
                   image: DecorationImage(
                     image: AssetImage("assets/background_image.jpg"),
                     colorFilter: ColorFilter.mode(
