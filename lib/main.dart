@@ -36,57 +36,70 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class HomePage extends StatefulWidget 
-{
+class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> 
-{
+class _HomePageState extends State<HomePage> {
   User _user;
   String name = null;
   String email = null;
-
+  var blogArr = [
+    'Tech',
+    'Non-Tech',
+    'Interview',
+    'Intership',
+    'Food',
+    'Travel',
+    'Political',
+    'Business'
+  ];
+  var blogExtention = [
+    'Blogs',
+    'Blogs',
+    'Exps',
+    'Exps',
+    'Blogs',
+    'Blogs',
+    'Blogs',
+    'Blogs'
+  ];
   var flushbar;
-  void show(String s1) 
-  {
-      flushbar = Flushbar(
+  void show(String s1) {
+    flushbar = Flushbar(
       margin: EdgeInsets.all(8),
       borderRadius: 8,
       duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
+      icon: Icon(
+        Icons.info_outline,
+        color: Colors.blue,
+      ),
       messageText: Text(
         s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
       ),
       backgroundColor: Colors.black87,
     );
   }
 
-  void _singin() 
-  {
+  void _singin() {
     Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => Login()));
+        .push(MaterialPageRoute(builder: (context) => Login()));
   }
 
-  Future<void> _signOut() async 
-  {
+  Future<void> _signOut() async {
     Navigator.of(context).pop();
-    await FirebaseAuth.instance
-      .signOut()
-      .then((value) {})
-      .catchError((e) {
-        print(e);
-      });
+    await FirebaseAuth.instance.signOut().then((value) {}).catchError((e) {
+      print(e);
+    });
     print("User logged out");
     show("You are logged out:)");
     flushbar.show(context);
     _getname();
   }
 
-  Future<void> _getname() async 
-  {
+  Future<void> _getname() async {
     _user = FirebaseAuth.instance.currentUser;
     if (_user == null) {
       print("user is null");
@@ -95,20 +108,16 @@ class _HomePageState extends State<HomePage>
     //   print("nsak" + _user.emailVerified.toString());
     // }
 
-    if (_user != null && _user.emailVerified) 
-    {
+    if (_user != null && _user.emailVerified) {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(_user.uid)
-        .get();
-      setState(() 
-      {
+          .collection('users')
+          .doc(_user.uid)
+          .get();
+      setState(() {
         name = snapshot.get('name').toString();
         email = _user.email;
       });
-    } 
-    else 
-    {
+    } else {
       setState(() {
         name = null;
         email = null;
@@ -117,8 +126,7 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
-  void initState() 
-  {
+  void initState() {
     super.initState();
     _getname();
     print(name);
@@ -126,41 +134,39 @@ class _HomePageState extends State<HomePage>
   }
 
   @override
-  void dispose() 
-  {
+  void dispose() {
     super.dispose();
   }
 
-  Widget _drawer() 
-  {
+  Widget _drawer() {
     return Drawer(
       child: Container(
         color: Colors.black,
         child: ListView(
           children: <Widget>[
             name != null
-              ? UserAccountsDrawerHeader(
-                accountName: Text(
-                  name,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                accountEmail: Text(
-                  email,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor: Colors.black,
-                  child: Text(
-                    name[0],
-                    style: TextStyle(fontSize: 40.0),
-                  ),
-                ),
-              )
-            : Container(),
+                ? UserAccountsDrawerHeader(
+                    accountName: Text(
+                      name,
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    accountEmail: Text(
+                      email,
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    currentAccountPicture: CircleAvatar(
+                      backgroundColor: Colors.black,
+                      child: Text(
+                        name[0],
+                        style: TextStyle(fontSize: 40.0),
+                      ),
+                    ),
+                  )
+                : Container(),
             Container(
               color: Colors.black,
               child: Column(
@@ -180,22 +186,22 @@ class _HomePageState extends State<HomePage>
                     color: Colors.blue,
                     height: 0.0,
                   ),
-                  name != null? ListTile(
-                    title: Text(
-                      "My Profile",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    leading: Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                    ),
-                    onTap: () {},
-                  )
-                  : Container(),
-
+                  name != null
+                      ? ListTile(
+                          title: Text(
+                            "My Profile",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          leading: Icon(
+                            Icons.settings,
+                            color: Colors.white,
+                          ),
+                          onTap: () {},
+                        )
+                      : Container(),
                   Divider(
                     color: Colors.blue,
-                    height: 0.0,  
+                    height: 0.0,
                   ),
                   ListTile(
                     title: Text(
@@ -218,6 +224,7 @@ class _HomePageState extends State<HomePage>
       ),
     );
   }
+
   var firstColor = Colors.black12, secondColor = Colors.black;
   @override
   Widget build(BuildContext context) {
@@ -245,171 +252,215 @@ class _HomePageState extends State<HomePage>
           children: [
             Text(
               "Create New Blog",
-              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
-            SizedBox(width: 10.0,),
+            SizedBox(
+              width: 10.0,
+            ),
             Icon(
               Icons.create,
               color: Colors.white,
             )
           ],
         ),
-        onPressed: (){
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => BlogTile()));
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => BlogTile()));
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              "assets/background_image.jpg",
-            ),
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.7), 
-              BlendMode.darken
-            ),
-            fit: BoxFit.cover,
-          ),
+      // body: Container(
+      //   decoration: BoxDecoration(
+      //     image: DecorationImage(
+      //       image: AssetImage(
+      //         "assets/background_image.jpg",
+      //       ),
+      //       fit: BoxFit.cover,
+      //     ),
+      //   ),
+      // child: Container(
+      //   height: MediaQuery.of(context).size.height,
+      //   width: MediaQuery.of(context).size.width,
+      //   child: ListView(
+      //     // mainAxisAlignment: MainAxisAlignment.center,
+      //     // crossAxisAlignment: CrossAxisAlignment.center,
+      //     padding: EdgeInsets.only(top:30.0),
+      //     children: [
+      //       NiceButton(
+      //         background: null,
+      //         radius: 40,
+      //         padding: const EdgeInsets.all(15),
+      //         text: "Tech Blogs",
+      //         textColor: Colors.white70,
+      //         icon: Icons.library_books,
+      //         iconColor: Colors.blue,
+      //         gradientColors: [secondColor, firstColor],
 
+      //         fontSize: 16.0,
+      //         elevation: 2.0,
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox( height: 15.0,),
+      //       NiceButton(
+      //         background: null,
+      //         radius: 40,
+      //         padding: const EdgeInsets.all(15),
+      //         text: "Non-Tech Blogs",
+      //         textColor: Colors.white70,
+      //         icon: Icons.library_books,
+      //         gradientColors: [secondColor, firstColor],
+      //         iconColor: Colors.blue,
+      //         fontSize: 16.0,
+      //         elevation: 2.0,
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox( height: 15.0,),
+      //       NiceButton(
+      //         background: null,
+      //         radius: 40,
+      //         padding: const EdgeInsets.all(15),
+      //         text: "Interview Exps",
+      //         textColor: Colors.white70,
+      //         icon: Icons.library_books,
+      //         gradientColors: [secondColor, firstColor],
+      //         iconColor: Colors.blue,
+      //         fontSize: 16.0,
+      //         elevation: 2.0,
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox( height: 15.0,),
+      //       NiceButton(
+      //         background: null,
+      //         radius: 40,
+      //         padding: const EdgeInsets.all(15),
+      //         text: "Internship Exps",
+      //         textColor: Colors.white70,
+      //         icon: Icons.library_books,
+      //         gradientColors: [secondColor, firstColor],
+      //         iconColor: Colors.blue,
+      //         fontSize: 16.0,
+      //         elevation: 2.0,
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox( height: 15.0,),
+      //       NiceButton(
+      //         background: null,
+      //         radius: 40,
+      //         padding: const EdgeInsets.all(15),
+      //         text: "Food Blogs",
+      //         textColor: Colors.white70,
+      //         icon: Icons.library_books,
+      //         gradientColors: [secondColor, firstColor],
+      //         iconColor: Colors.blue,
+      //         fontSize: 16.0,
+      //         elevation: 2.0,
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox( height: 15.0,),
+      //       NiceButton(
+      //         background: null,
+      //         radius: 40,
+      //         padding: const EdgeInsets.all(15),
+      //         text: "Travel Blogs",
+      //         textColor: Colors.white70,
+      //         icon: Icons.library_books,
+      //         gradientColors: [secondColor, firstColor],
+      //         iconColor: Colors.blue,
+      //         fontSize: 16.0,
+      //         elevation: 2.0,
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox( height: 15.0,),
+      //       NiceButton(
+      //         background: null,
+      //         radius: 40,
+      //         padding: const EdgeInsets.all(15),
+      //         text: "Political Blogs",
+      //         textColor: Colors.white70,
+      //         icon: Icons.library_books,
+      //         gradientColors: [secondColor, firstColor],
+      //         iconColor: Colors.blue,
+      //         fontSize: 16.0,
+      //         elevation: 2.0,
+      //         onPressed: () {},
+      //       ),
+      //       SizedBox( height: 15.0,),
+      //       NiceButton(
+      //         background: null,
+      //         radius: 40,
+      //         padding: const EdgeInsets.all(15),
+      //         text: "Business Blogs",
+      //         textColor: Colors.white70,
+      //         icon: Icons.library_books,
+      //         gradientColors: [secondColor, firstColor],
+      //         iconColor: Colors.blue,
+      //         fontSize: 16.0,
+      //         elevation: 2.0,
+      //         onPressed: () {},
+      //       ),
+      //       // SizedBox( height: 15.0,),
+      //       // NiceButton(
+      //       //   background: null,
+      //       //   radius: 40,
+      //       //   padding: const EdgeInsets.all(15),
+      //       //   text: "Business Blogs",
+      //       //   textColor: Colors.white70,
+      //       //   icon: Icons.library_books,
+      //       //   gradientColors: [secondColor, firstColor],
+      //       //   iconColor: Colors.blue,
+      //       //   fontSize: 16.0,
+      //       //   elevation: 2.0,
+      //       //   onPressed: () {},
+      //       // ),
+      //     ],
+      //   ),
+      // )
+      // ),
+      body: Container(
+        // height: MediaQuery.of(context).size.height,
+        // width: MediaQuery.of(context).size.width,
+        color: Colors.black,
+        child: GridView.count(
+          crossAxisCount: 2,
+          children: List.generate(8, (index) {
+            return Card(
+              elevation: 10.0,
+              color: Colors.black,
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/background_image.jpg"),
+                    colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.7), BlendMode.darken),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    //  SizedBox(height: MediaQuery.of(context).size.height/15,),
+                    Text(
+                      blogArr[index],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    Text(
+                      blogExtention[index],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
         ),
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: ListView(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            padding: EdgeInsets.only(top:30.0),
-            children: [
-              NiceButton(
-                background: null,
-                radius: 40,
-                padding: const EdgeInsets.all(15),
-                text: "Tech Blogs",
-                textColor: Colors.white70,
-                icon: Icons.library_books,
-                iconColor: Colors.blue,
-                gradientColors: [secondColor, firstColor],
-                
-                fontSize: 16.0,
-                elevation: 2.0,
-                onPressed: () {},
-              ),
-              SizedBox( height: 15.0,),
-              NiceButton(
-                background: null,
-                radius: 40,
-                padding: const EdgeInsets.all(15),
-                text: "Non-Tech Blogs",
-                textColor: Colors.white70,
-                icon: Icons.library_books,
-                gradientColors: [secondColor, firstColor],
-                iconColor: Colors.blue,
-                fontSize: 16.0,
-                elevation: 2.0,
-                onPressed: () {},
-              ),
-              SizedBox( height: 15.0,),
-              NiceButton(
-                background: null,
-                radius: 40,
-                padding: const EdgeInsets.all(15),
-                text: "Interview Exps",
-                textColor: Colors.white70,
-                icon: Icons.library_books,
-                gradientColors: [secondColor, firstColor],
-                iconColor: Colors.blue,
-                fontSize: 16.0,
-                elevation: 2.0,
-                onPressed: () {},
-              ),
-              SizedBox( height: 15.0,),
-              NiceButton(
-                background: null,
-                radius: 40,
-                padding: const EdgeInsets.all(15),
-                text: "Internship Exps",
-                textColor: Colors.white70,
-                icon: Icons.library_books,
-                gradientColors: [secondColor, firstColor],
-                iconColor: Colors.blue,
-                fontSize: 16.0,
-                elevation: 2.0,
-                onPressed: () {},
-              ),
-              SizedBox( height: 15.0,),
-              NiceButton(
-                background: null,
-                radius: 40,
-                padding: const EdgeInsets.all(15),
-                text: "Food Blogs",
-                textColor: Colors.white70,
-                icon: Icons.library_books,
-                gradientColors: [secondColor, firstColor],
-                iconColor: Colors.blue,
-                fontSize: 16.0,
-                elevation: 2.0,
-                onPressed: () {},
-              ),
-              SizedBox( height: 15.0,),
-              NiceButton(
-                background: null,
-                radius: 40,
-                padding: const EdgeInsets.all(15),
-                text: "Travel Blogs",
-                textColor: Colors.white70,
-                icon: Icons.library_books,
-                gradientColors: [secondColor, firstColor],
-                iconColor: Colors.blue,
-                fontSize: 16.0,
-                elevation: 2.0,
-                onPressed: () {},
-              ),
-              SizedBox( height: 15.0,),
-              NiceButton(
-                background: null,
-                radius: 40,
-                padding: const EdgeInsets.all(15),
-                text: "Political Blogs",
-                textColor: Colors.white70,
-                icon: Icons.library_books,
-                gradientColors: [secondColor, firstColor],
-                iconColor: Colors.blue,
-                fontSize: 16.0,
-                elevation: 2.0,
-                onPressed: () {},
-              ),
-              SizedBox( height: 15.0,),
-              NiceButton(
-                background: null,
-                radius: 40,
-                padding: const EdgeInsets.all(15),
-                text: "Business Blogs",
-                textColor: Colors.white70,
-                icon: Icons.library_books,
-                gradientColors: [secondColor, firstColor],
-                iconColor: Colors.blue,
-                fontSize: 16.0,
-                elevation: 2.0,
-                onPressed: () {},
-              ),
-              // SizedBox( height: 15.0,),
-              // NiceButton(
-              //   background: null,
-              //   radius: 40,
-              //   padding: const EdgeInsets.all(15),
-              //   text: "Business Blogs",
-              //   textColor: Colors.white70,
-              //   icon: Icons.library_books,
-              //   gradientColors: [secondColor, firstColor],
-              //   iconColor: Colors.blue,
-              //   fontSize: 16.0,
-              //   elevation: 2.0,
-              //   onPressed: () {},
-              // ),
-            ],
-          ),
-        )
       ),
     );
   }

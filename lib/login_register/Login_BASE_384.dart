@@ -142,7 +142,7 @@ class _LoginState extends State<Login>
   {
     return Card(
       elevation: 5.0,
-      color: Colors.black,
+      color: Colors.black87,
       margin: EdgeInsets.all(4.0),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Colors.blue, width: 1),
@@ -399,8 +399,8 @@ class _LoginState extends State<Login>
           style: TextStyle(color: Colors.blue),
         ),
         centerTitle: true,
-      ),      
-      backgroundColor: Colors.black,
+      ),
+      backgroundColor: Colors.white24,
       body:_isLoading==true?
       Center(child: spinkit)
       :
