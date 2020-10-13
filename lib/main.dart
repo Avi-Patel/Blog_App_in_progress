@@ -1,12 +1,15 @@
 import 'dart:ui';
 import 'package:blogging_app/Blog/Blog_templete.dart';
+import 'package:blogging_app/Blog/Show_blogs.dart';
+import 'package:blogging_app/Profile/user_profile.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flushbar/flushbar.dart';
-import 'package:nice_button/NiceButton.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'login_register/Login.dart';
+import 'image_urls.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,11 +28,13 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Blogging App',
-      theme: ThemeData(
+      themeMode: ThemeMode.dark,
+      darkTheme: ThemeData(
         appBarTheme: AppBarTheme(
           color: Colors.black,
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        fontFamily: "Roboto Slab"
       ),
       home: HomePage(),
     );
@@ -37,19 +42,26 @@ class _MyAppState extends State<MyApp> {
 }
 
 class HomePage extends StatefulWidget {
+  String msg=null;
+  HomePage({this.msg});
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+
+
   User _user;
   String name = null;
   String email = null;
+  String uid=null;
+  String _url="https://png.pngitem.com/pimgs/s/506-5067022_sweet-shap-profile-placeholder-hd-png-download.png";
+  Urls _urls=Urls();
   var blogArr = [
     'Tech',
     'Non-Tech',
     'Interview',
-    'Intership',
+    'Internship',
     'Food',
     'Travel',
     'Political',
@@ -84,6 +96,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _singin() {
+    Navigator.of(context).pop();
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => Login()));
   }
@@ -104,33 +117,72 @@ class _HomePageState extends State<HomePage> {
     if (_user == null) {
       print("user is null");
     }
-    // if (_user != null) {
-    //   print("nsak" + _user.emailVerified.toString());
-    // }
 
     if (_user != null && _user.emailVerified) {
       DocumentSnapshot snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(_user.uid)
-          .get();
-      setState(() {
-        name = snapshot.get('name').toString();
-        email = _user.email;
-      });
-    } else {
+        .collection('users')
+        .doc(_user.uid)
+        .get()
+        .then((value) {
+          setState(() {
+            name = value.data()['name'];
+            email = _user.email;
+          });
+          print(name);
+          print(email);
+        })
+        .catchError((e){
+          print(e);
+        });
+    } 
+    else {
       setState(() {
         name = null;
         email = null;
+        uid=null;
       });
     }
   }
 
+  Future<void> _profileUrl() async
+  {
+    await FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .get()
+      .then((value){
+        // print(value.data().containsKey('profileUrl'));
+        if(value.data().containsKey('profileUrl')==true) 
+        {
+          setState(() {
+            _url=value.data()['profileUrl'].toString();
+          });
+        }
+        print(_url);
+      });
+  }
+   
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
+    if(widget.msg!=null)
+    {
+      show(widget.msg);
+      flushbar.show(context);
+    }
+    _user=FirebaseAuth.instance.currentUser;
     _getname();
-    print(name);
-    print(email);
+    // print(name);
+    // print(email);
+    // print(uid);
+    if(_user!=null)
+    {
+      setState(() {
+        uid=_user.uid;
+      });
+      _profileUrl();
+    }
   }
 
   @override
@@ -158,13 +210,45 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.black,
                       ),
                     ),
-                    currentAccountPicture: CircleAvatar(
-                      backgroundColor: Colors.black,
-                      child: Text(
-                        name[0],
-                        style: TextStyle(fontSize: 40.0),
+                    currentAccountPicture:
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 2.0
+                          ),
+                          color: Colors.black,
+                          image: DecorationImage(
+                            image:CachedNetworkImageProvider(
+                              _url,
+                            ),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: _url!=null?
+                          ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: _url,
+                              fit: BoxFit.fill,  
+                              progressIndicatorBuilder: (context, url, downloadProgress) => 
+                                CircularProgressIndicator(
+                                  value: downloadProgress.progress,
+                              ),
+                              placeholderFadeInDuration: Duration(
+                                seconds: 1,
+                              ),
+                              fadeInDuration: Duration(
+                                seconds: 1,
+                              ),
+                            ),
+                          )
+                          :
+                          Text(
+                            name[0],
+                            style: TextStyle(fontSize: 40.0),
+                          ),
                       ),
-                    ),
                   )
                 : Container(),
             Container(
@@ -196,7 +280,14 @@ class _HomePageState extends State<HomePage> {
                             Icons.settings,
                             color: Colors.white,
                           ),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) => UserProfile()))
+                              .then((_){
+                                _profileUrl();
+                                _getname();
+                              });
+                          },
                         )
                       : Container(),
                   Divider(
@@ -226,7 +317,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   var firstColor = Colors.black12, secondColor = Colors.black;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -238,16 +329,17 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: true,
       ),
+      backgroundColor: Colors.black,
       drawer: _drawer(),
       floatingActionButton: FlatButton(
         color: Colors.blue,
         splashColor: Colors.white,
-        minWidth: 100.0,
-        height: 40.0,
+        padding: EdgeInsets.fromLTRB(10.0,10.0,10.0,10.0),
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: Colors.black, width: 2),
+          // side: BorderSide(color: Colors.black, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
+        
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -266,54 +358,96 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => BlogTile()));
+          // Navigator.of(context)
+          //     .push(MaterialPageRoute(builder: (context) => BlogTile()));
+          // print(FirebaseAuth.instance.currentUser);
+          if(FirebaseAuth.instance.currentUser!=null)
+          {
+            Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => BlogTile()))
+              .then((value){
+                if(value!=null)
+                {
+                  show(value);
+                  flushbar.show(context);
+                }
+              });
+          }
+          else
+          {
+            Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => Login()));
+          }
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Container(
         // height: MediaQuery.of(context).size.height,
         // width: MediaQuery.of(context).size.width,
-        color: Colors.black,
+        // color: Colors.black,
         child: GridView.count(
           crossAxisCount: 2,
           children: List.generate(8, (index) {
-            return Card(
-              elevation: 10.0,
-              color: Colors.black,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(color: Colors.white),
-                  image: DecorationImage(
-                    image: AssetImage("assets/background_image.jpg"),
-                    colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.7), BlendMode.darken),
-                    fit: BoxFit.cover,
+            return InkWell(
+              splashColor: Colors.white,
+              highlightColor: Colors.white,
+              child: Card(
+                elevation: 10.0,
+                color: Colors.black,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: Colors.white),
+                    image: DecorationImage(
+                      // image: AssetImage("assets/${blogArr[index].toLowerCase()}"+"_"+"${blogExtention[index].toLowerCase()}.jpg"),
+                      image: CachedNetworkImageProvider(
+                        _urls.urls[index],
+                      ),
+                      colorFilter: ColorFilter.mode(
+                          Colors.black.withOpacity(0.7), BlendMode.darken),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      //  SizedBox(height: MediaQuery.of(context).size.height/15,),
+                      Column(
+                        children: [
+                          Text(
+                            blogArr[index],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400
+                            ),
+                          ),
+                          Text(
+                            blogExtention[index],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400
+                            ),
+                          ),
+                        ],
+                      ),
+                      
+                      Icon(
+                        Icons.keyboard_arrow_right_rounded,
+                        color: Colors.white,
+                        size: 30.0,
+                      )
+
+                    ],
                   ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    //  SizedBox(height: MediaQuery.of(context).size.height/15,),
-                    Text(
-                      blogArr[index],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                    Text(
-                      blogExtention[index],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
               ),
+              onTap: (){
+                Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => ShowBlogs("${blogArr[index]}"+" "+"${blogExtention[index]}")));
+              }
             );
           }),
         ),

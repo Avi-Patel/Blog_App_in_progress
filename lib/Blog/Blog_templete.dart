@@ -55,7 +55,7 @@ class _BlogTileState extends State<BlogTile> {
   }
 
   var _docId;
-  bool _addData()
+  Future<bool> _addData() async
   {
     User _user= FirebaseAuth.instance.currentUser;    
     Map<String,dynamic> data={
@@ -63,15 +63,31 @@ class _BlogTileState extends State<BlogTile> {
       'title': _blog.getTitle(),
       'description': _blog.getDescription(),
       'photosUrl': [],
+      '#ratings':0,
+      'star': 0.0,
+      'date': "${DateTime.now().day}"+"/"+"${DateTime.now().month}"+"/"+"${DateTime.now().year}",
+      'likes': 0,
     };
-    _docId=DateTime.now().millisecondsSinceEpoch.toString();
+    _docId=DateTime.now().microsecondsSinceEpoch.toString();
 
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
     .collection('${_blog.getType()}')
     .doc(_docId)
     .set(data)
-    .then((value){
+    .then((value) async{
       print("data added");
+      await FirebaseFirestore.instance
+      .collection('users')
+      .doc(_user.uid.toString())
+      .update({
+        'Your Blogs': FieldValue.increment(1),
+      })
+      .catchError((e){
+        print(e);
+        show("Opps!! Some error occured. Try again");
+        flushbar..show(context);
+        return false;  
+      });
     })
     .catchError((e){
       print(e);
@@ -84,13 +100,13 @@ class _BlogTileState extends State<BlogTile> {
 
   Future<void> _upload() async
   {
-    _blog.getPhotos().forEach((element) async
+    for(var element in _blog.getPhotos())
     {
       StorageReference _storageRef= FirebaseStorage
         .instance
         .ref()
         .child('${_blog.getType()}')
-        .child('${_blog.getTitle()}'+DateTime.now().millisecondsSinceEpoch.toString());
+        .child('${_blog.getTitle()}'+DateTime.now().microsecondsSinceEpoch.toString());
 
       final StorageUploadTask _task=_storageRef.putFile(element);
       StorageTaskSnapshot storageSnapshot = await _task.onComplete;
@@ -104,7 +120,9 @@ class _BlogTileState extends State<BlogTile> {
         .update({
           "photosUrl" :FieldValue.arrayUnion([value.toString()])
         })
-        .then((value){print("added value");})
+        .then((value){
+          print("added value");
+        })
         .catchError((e){
           print(e);
           show("Opps!! Some error occured. Try again");
@@ -116,7 +134,7 @@ class _BlogTileState extends State<BlogTile> {
         show("Opps!! Some error occured. Try again");
         flushbar.show(context);
       });
-    });
+    }
   }
 
   Future<void> _addphotoToList() async
@@ -197,7 +215,7 @@ class _BlogTileState extends State<BlogTile> {
           padding: const EdgeInsets.all(8.0),
           child: Form(
             key: _fbKey1,
-            autovalidate: true,
+            autovalidateMode: AutovalidateMode.always,
             child: Column(
               children: [
                 Container(
@@ -245,7 +263,7 @@ class _BlogTileState extends State<BlogTile> {
                       size: 30.0,
                     )
                   ),
-                  autovalidate: true,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
                     if (value==null) {return "Title should not be empty";}
                   },
@@ -272,7 +290,7 @@ class _BlogTileState extends State<BlogTile> {
               key: Key(_blog.getPhotos()[i].toString()),
               child: GestureDetector(
                 child: new Container(
-                  height: 150,
+                  height: MediaQuery.of(context).size.width,
                   width: MediaQuery.of(context).size.width,
                   margin: EdgeInsets.fromLTRB(8.0,8.0,8.0,0.0),
                   decoration: BoxDecoration(
@@ -348,7 +366,8 @@ class _BlogTileState extends State<BlogTile> {
               },
             ),
           ),
-        )
+        ),
+
 
       ],
     );
@@ -374,10 +393,9 @@ class _BlogTileState extends State<BlogTile> {
       floatingActionButton: FlatButton(
         color: Colors.green,
         splashColor: Colors.white,
-        minWidth: 100.0,
-        height: 40.0,
+        padding: EdgeInsets.fromLTRB(10.0,10.0,10.0,10.0),
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: Colors.black, width: 2),
+          // side: BorderSide(color: Colors.black, width: 1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(
@@ -394,21 +412,17 @@ class _BlogTileState extends State<BlogTile> {
             )
           ],
         ),
-        onPressed: () {
-          if(_fbKey1.currentState.validate() && _fbKey2.currentState.validate())
+        onPressed: () async{
+          if(_isLoading==false && _fbKey1.currentState.validate() && _fbKey2.currentState.validate())
           {
             setState(() {
               _isLoading=true;
             });
-            var answer=_addData();
+            var answer=await _addData();
             if(answer==true)
             {
-              _upload();
-              show("It may take a while to reflact on home page");
-              flushbar.show(context)
-              .then((_) {
-                Navigator.of(context).pop();  
-              });
+              await _upload();
+              Navigator.of(context).pop("It may take a while to reflact on home page");  
             }              
           }
         }

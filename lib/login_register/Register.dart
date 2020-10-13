@@ -277,7 +277,9 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                           if(_isLoading==false)
                           {
                             print(_isLoading);
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(
+                              "Hey, verify your email via link sent in the mail and the login"
+                            );
                           }
                           else 
                           {

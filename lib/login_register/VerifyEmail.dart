@@ -85,7 +85,9 @@ class _VerifyEmailState extends State<VerifyEmail>
                       "Cancel",
                     ),
                     color: Colors.green,
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => Navigator.of(context).pop(
+                      "Hey, verify your email via link sent in the mail and the login",
+                    ),
                   ),
                 ],
               )

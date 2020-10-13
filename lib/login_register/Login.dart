@@ -61,14 +61,22 @@ class _LoginState extends State<Login>
           _isLoading=false;
         });
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => VerifyEmail()));
+          .push(MaterialPageRoute(builder: (context) => VerifyEmail()))
+          .then((value){
+            if(value!=null)
+            {
+              show(value);
+              flushbar.show(context);
+            }
+          });
       } 
       else 
       {
         Navigator.of(context).pop();
-        Navigator.of(context).pop();
         Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+            .pushReplacement(MaterialPageRoute(builder: (context) => HomePage(
+              msg:"Hey, Welcome buddy :)"
+            )));
       }
     })
     .catchError((e){
@@ -289,7 +297,14 @@ class _LoginState extends State<Login>
                         onTap: () {
                           FocusScope.of(context).unfocus();
                           Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) => Register()));
+                            MaterialPageRoute(builder: (context) => Register()))
+                            .then((value){
+                              if(value!=null)
+                              {
+                                show(value);
+                                flushbar.show(context);
+                              }
+                            });
                         },
                       ),
                       
