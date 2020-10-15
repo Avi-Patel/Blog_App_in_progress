@@ -1,23 +1,24 @@
 
 import 'package:blogging_app/Blog/blog_data_model.dart';
 import 'package:blogging_app/Blog/futuredata.dart';
+import 'package:blogging_app/helper_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flushbar/flushbar.dart';
-import 'package:flutter/material.dart';
-
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' as pull;
 
+// ignore: must_be_immutable
 class ShowSavedBlogs extends StatefulWidget {
   String type;
-  ShowSavedBlogs(this.type);
+  var _index;
+  ShowSavedBlogs(this.type,this._index);
   @override
-  _ShowSavedBlogsState createState() => _ShowSavedBlogsState();
+  _ShowSavedBlogsState createState() => _ShowSavedBlogsState(_index);
 }
 
 class _ShowSavedBlogsState extends State<ShowSavedBlogs> {
+  var _index;
+  _ShowSavedBlogsState(this._index);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,20 +39,21 @@ class _ShowSavedBlogsState extends State<ShowSavedBlogs> {
             ),
             onTap: ()=>showSearch(
               context: context, 
-              delegate: Datasearch(widget.type),              
+              delegate: Datasearch(widget.type,_index),              
             ),
           )
         ],
       ),
       backgroundColor: Colors.black,
-      body: Streambuilder("", widget.type),
+      body: Streambuilder("", widget.type,_index),
     );
   }
 }
 
 class Datasearch extends SearchDelegate<String>{
   String type;
-  Datasearch(this.type);
+  var _index;
+  Datasearch(this.type,this._index);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -83,46 +85,34 @@ class Datasearch extends SearchDelegate<String>{
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     return null;
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return Streambuilder(query,type);
+    return Streambuilder(query,type,_index);
   }
 
 }
 
+// ignore: must_be_immutable
 class Streambuilder extends StatefulWidget {
   String qry,type;
-  Streambuilder(this.qry,this.type);
+  var _index;
+  Streambuilder(this.qry,this.type,this._index);
   @override
-  _StreambuilderState createState() => _StreambuilderState(qry,type);
+  _StreambuilderState createState() => _StreambuilderState(qry,type,_index);
 }
 
 class _StreambuilderState extends State<Streambuilder> {
   String qry,type;
-  _StreambuilderState(this.qry,this.type);
+  var _index;
+  _StreambuilderState(this.qry,this.type,this._index);
 
   // List ids=List();
   String uid;
   List list=List();
-  var flushbar;
-  void show(String s1) 
-  {
-      flushbar = Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text(
-        s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-    );
-  }
+  Helper _helper=Helper();
   
   Future<void> _fetchsavedDocuments() async
   {
@@ -166,14 +156,14 @@ class _StreambuilderState extends State<Streambuilder> {
       })
       .then((_){
         print("Blog removed from your saved blogs");
-        show("Blog removed from your saved blogs");
-        flushbar.show(context);
+        _helper.show("Blog removed from your saved blogs");
+        _helper.flushbar.show(context);
       })
       .catchError((e)
       {
         print("error : " +e.toString());
-        show("Opps!! Something went wrong");
-        flushbar.show(context);
+        _helper.show("Opps!! Something went wrong");
+        _helper.flushbar.show(context);
       });
     setState(() {
       list.removeAt(index);
@@ -182,7 +172,6 @@ class _StreambuilderState extends State<Streambuilder> {
 
   @override
   void initState(){
-    // TODO: implement initState
     super.initState();
     uid=FirebaseAuth.instance.currentUser.uid;  
     _fetchsavedDocuments().then((_) {
@@ -214,7 +203,7 @@ class _StreambuilderState extends State<Streambuilder> {
       ListView.builder(
         itemCount: list.length,
         itemBuilder: (context,index){
-          DocumentSnapshot doc=list[index];
+          // DocumentSnapshot doc=list[index];
           FutureDataModel data=FutureDataModel.fromSnapshot(list[index]);
           if(qry==null || list[index].data()['title'].toLowerCase().contains(qry.toLowerCase()))
           return Dismissible(
@@ -229,11 +218,12 @@ class _StreambuilderState extends State<Streambuilder> {
               color: Colors.red,
             ),
             background: Container(),
-            child: FutureData(data,type,"saved"),
+            child: FutureData(data,type,"saved",_index),
             onDismissed: (direction) async{
               await _deleteSavedBlog(index);
             },
           );
+          return SizedBox();
         },
       ),
     );

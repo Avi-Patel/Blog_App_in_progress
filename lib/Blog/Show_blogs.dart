@@ -1,34 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'futuredata.dart';
 import 'blog_data_model.dart';
  
+// ignore: must_be_immutable
 class ShowBlogs extends StatefulWidget {
   String type;
-  ShowBlogs(this.type);
+  var _index;
+  ShowBlogs(this.type,this._index);
   @override
-  _ShowBlogsState createState() => _ShowBlogsState();
+  _ShowBlogsState createState() => _ShowBlogsState(_index);
  }
  
 class _ShowBlogsState extends State<ShowBlogs> {
-  @override
-  void initState() 
-  {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  void dispose() 
-  {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
+  var _index;
+  _ShowBlogsState(this._index);  
 
   @override
   Widget build(BuildContext context) {
@@ -50,20 +36,21 @@ class _ShowBlogsState extends State<ShowBlogs> {
             ),
             onTap: ()=>showSearch(
               context: context, 
-              delegate: Datasearch(widget.type),              
+              delegate: Datasearch(widget.type,_index),              
             ),
           )
         ],
       ),
       backgroundColor: Colors.black,
-      body: Streambuilder("",widget.type),
+      body: Streambuilder("",widget.type,_index),
     );
   }
 }
 
 class Datasearch extends SearchDelegate<String>{
   String type;
-  Datasearch(this.type);
+  var _index;
+  Datasearch(this.type,this._index);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -95,35 +82,31 @@ class Datasearch extends SearchDelegate<String>{
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     return null;
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     
-    return Streambuilder(query,type);
+    return Streambuilder(query,type,_index);
   }
 
 }
 
 
+// ignore: must_be_immutable
 class Streambuilder extends StatefulWidget {
   String qry,type;
-  Streambuilder(this.qry,this.type);
+  var _index;
+  Streambuilder(this.qry,this.type,this._index);
   @override
-  _StreambuilderState createState() => _StreambuilderState(qry,type);
+  _StreambuilderState createState() => _StreambuilderState(qry,type,_index);
 }
 
 class _StreambuilderState extends State<Streambuilder> {
   String qry,type;
-  _StreambuilderState(this.qry,this.type);
-
-  SpinKitFadingCircle spinkit = SpinKitFadingCircle(
-    color: Colors.blue,
-    size: 50.0,
-    duration: Duration(milliseconds: 2000),
-  );
+  var _index;
+  _StreambuilderState(this.qry,this.type,this._index);
 
   Future<void> _tryagain() async
   {
@@ -143,7 +126,7 @@ class _StreambuilderState extends State<Streambuilder> {
           if (snapshot.hasError) {
           return Text('Something went wrong');
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (!snapshot.hasData) {
             return Center(
               child: Text(
                 "Loading...",
@@ -170,11 +153,12 @@ class _StreambuilderState extends State<Streambuilder> {
             color: Colors.black,
             child: ListView.builder(
               itemCount: snapshot.data.docs.length,
-              itemBuilder: (context,index){
-                DocumentSnapshot doc=snapshot.data.docs[index];
+              itemBuilder: (BuildContext context,index){
+                // DocumentSnapshot doc=snapshot.data.docs[index];
                 FutureDataModel data=FutureDataModel.fromSnapshot(snapshot.data.docs[index]);
                 if(qry==null || snapshot.data.docs[index].data()['title'].toLowerCase().contains(qry.toLowerCase()))
-                return FutureData(data,type,"general");
+                return FutureData(data,type,"general",_index);
+                else return SizedBox();
               },
             ),
           );

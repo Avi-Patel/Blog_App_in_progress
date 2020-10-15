@@ -1,16 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:io' as io;
+// ignore: must_be_immutable
 class FullImage extends StatefulWidget {
-  String _imageUrl;
-  FullImage(this._imageUrl);
+  String _imageUrl,_type;
+  FullImage(this._imageUrl,this._type);
   @override
-  _FullImageState createState() => _FullImageState(_imageUrl);
+  _FullImageState createState() => _FullImageState(_imageUrl,_type);
 }
 
 class _FullImageState extends State<FullImage> {
-  String _imageUrl;
-  _FullImageState(this._imageUrl);
+  String _imageUrl,_type;
+  _FullImageState(this._imageUrl,this._type);
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -18,7 +19,8 @@ class _FullImageState extends State<FullImage> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         color: Colors.black,
-        child: CachedNetworkImage(
+        child: _type=="link"?
+        CachedNetworkImage(
           imageUrl: _imageUrl,
           progressIndicatorBuilder: (context, url, downloadProgress) => 
             CircularProgressIndicator(value: downloadProgress.progress
@@ -29,7 +31,11 @@ class _FullImageState extends State<FullImage> {
           fadeInDuration: Duration(
             seconds: 1,
           ),
-        ),
+        )
+        :
+        Image.file(
+          io.File(_imageUrl)
+        )
       )
     );
   }

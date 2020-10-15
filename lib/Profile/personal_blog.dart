@@ -1,7 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:blogging_app/Profile/Show_personal_blogs.dart';
 import 'package:blogging_app/image_urls.dart';
 
@@ -11,7 +9,6 @@ class PersonalBlogs extends StatefulWidget {
 }
 
 class _PersonalBlogsState extends State<PersonalBlogs> {
-
   Urls _urls=Urls();
   var blogArr = [
     'Tech',
@@ -111,7 +108,7 @@ class _PersonalBlogsState extends State<PersonalBlogs> {
               ),
               onTap: (){
                 Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => ShowPersonalBlogs("${blogArr[index]}"+" "+"${blogExtention[index]}")));
+                  .push(MaterialPageRoute(builder: (context) => ShowPersonalBlogs("${blogArr[index]}"+" "+"${blogExtention[index]}",index)));
               }
             );
           }),

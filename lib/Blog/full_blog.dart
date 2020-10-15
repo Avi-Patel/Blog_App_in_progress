@@ -1,49 +1,43 @@
 import 'dart:ui';
-
 import 'package:blogging_app/Blog/blog_data_model.dart';
 import 'package:blogging_app/Blog/full_image.dart';
+import 'package:blogging_app/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:blogging_app/image_urls.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+
+
+// ignore: must_be_immutable
 class FullBlog extends StatefulWidget {
   FutureDataModel _data;
   String _type,_indicator;
-  FullBlog(this._data,this._type,this._indicator);
+  var _index;
+  FullBlog(this._data,this._type,this._indicator,this._index);
   @override
-  _FullBlogState createState() => _FullBlogState(_data,_type,_indicator);
+  _FullBlogState createState() => _FullBlogState(_data,_type,_indicator,_index);
 }
 
 class _FullBlogState extends State<FullBlog> {
   FutureDataModel _data;
   String _type,_indicator;
-  _FullBlogState(this._data,this._type,this._indicator);
+  var _index;
+  _FullBlogState(this._data,this._type,this._indicator,this._index);
 
+  Urls _urls= Urls();
+  Helper _helper=Helper();
   bool liked=false;
   String type;
-  var uid=null;
+  var uid;
   bool  saved=false;
   var _rating=1.0;
   bool _hasrated=false;
-  var flushbar;
-
-  void show(String s1) 
-  {
-      flushbar = Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text(
-        s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-    );
-  }
   
   Future<void> _checklike() async
   {
@@ -73,8 +67,8 @@ class _FullBlogState extends State<FullBlog> {
   {
     if(uid==null)
     {
-      show("You are not logged in!");
-      flushbar..show(context);
+      _helper.show("You are not logged in!");
+      _helper.flushbar..show(context);
       return;
     }
     if(liked==false)
@@ -100,8 +94,8 @@ class _FullBlogState extends State<FullBlog> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
     }
     else
@@ -127,8 +121,8 @@ class _FullBlogState extends State<FullBlog> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
     }
   }
@@ -162,8 +156,8 @@ class _FullBlogState extends State<FullBlog> {
   {
     if(uid==null)
     {
-      show("You are not logged in!");
-      flushbar..show(context);
+      _helper.show("You are not logged in!");
+      _helper.flushbar..show(context);
       return;
     }
     if(saved==false)
@@ -187,8 +181,8 @@ class _FullBlogState extends State<FullBlog> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
     }
     else
@@ -212,8 +206,8 @@ class _FullBlogState extends State<FullBlog> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
     }
   }
@@ -266,39 +260,11 @@ class _FullBlogState extends State<FullBlog> {
         })
         .catchError((e){
           print("error"+e.toString());
-          show("Opps!! Something went wrong");
+          _helper.show("Opps!! Something went wrong");
+          _helper.flushbar.show(context);
         });
-      });
-    
+      }); 
   }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    if(FirebaseAuth.instance.currentUser!=null)
-    {
-      setState(() {
-        uid=FirebaseAuth.instance.currentUser.uid.toString();
-      });
-    }
-    type=_type.replaceAll(" ", "_");
-    type=type.toLowerCase();
-    print(type);
-
-    if(uid!=null)
-    {
-      _checklike();
-      _checksave();
-      _checkrated();
-    }
-  }
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
 
   Future<String> _profileUrl() async
   {
@@ -318,6 +284,48 @@ class _FullBlogState extends State<FullBlog> {
     print(_url);
     return _url;
   }
+
+  Future<void> _launchURL(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    _helper.show("Could not launch url");
+    _helper.flushbar.show(context);
+  }
+}
+
+
+  @override
+  void initState() {
+    super.initState();
+    uid=null;
+    if(FirebaseAuth.instance.currentUser!=null)
+    {
+      setState(() {
+        uid=FirebaseAuth.instance.currentUser.uid.toString();
+      });
+    }
+    type=_type.replaceAll(" ", "_");
+    type=type.toLowerCase();
+    print(type);
+
+    setState(() {
+      print("description : "+_data.description);
+      _data.description=_data.description.replaceAll('<p><br><br></p>', '');
+      print("description : "+_data.description);
+    });
+    if(uid!=null)
+    {
+      _checklike();
+      _checksave();
+      _checkrated();
+    }
+  }
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
 
   Future<void> _showDialog()
   {
@@ -412,8 +420,8 @@ class _FullBlogState extends State<FullBlog> {
                     decoration: BoxDecoration(
                       color: Colors.black,
                       image: DecorationImage(
-                        image:AssetImage(
-                          "assets/$type.jpg",
+                        image:CachedNetworkImageProvider(
+                          _urls.urls[_index],
                         ),
                         fit: BoxFit.fill,
                       )
@@ -580,7 +588,7 @@ class _FullBlogState extends State<FullBlog> {
               subtitle: Row(
                 children: [
                   Text(
-                    "${(_data.description.length/100).toInt()+1}"+" min read ",
+                    "${(_data.description.length~/100)+1}"+" min read ",
                     // "3"+" min read ",
                     style: TextStyle(
                     color: Colors.white,
@@ -608,6 +616,7 @@ class _FullBlogState extends State<FullBlog> {
               ),
               onTap: (){},
             ),
+
             _data.photosUrl.length>0?
             SizedBox(
               height: MediaQuery.of(context).size.width*3/4,
@@ -615,7 +624,6 @@ class _FullBlogState extends State<FullBlog> {
                 itemCount: _data.photosUrl.length,
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
-                cacheExtent: 9999,
                 itemBuilder: (context,index){
                   return InkWell(
                     splashColor: Colors.white,
@@ -645,7 +653,7 @@ class _FullBlogState extends State<FullBlog> {
                     ),
                     onTap: (){
                       Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => FullImage(_data.photosUrl[index])));
+                      .push(MaterialPageRoute(builder: (context) => FullImage(_data.photosUrl[index],"link")));
                     },
                   );
                 },
@@ -657,17 +665,38 @@ class _FullBlogState extends State<FullBlog> {
             Container(
               margin: EdgeInsets.all(8.0),
               alignment: Alignment.topLeft,
-              child: Text(
-                // "nasknas csakjc kjsd skd \nwqk\nj d djksw diwjdns djwsd sjcjc\n"
-                // +"sncjkswc dsjkc kswdcs kackc wn DKKk XWDWQEFE",
-                _data.description,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal
-                ),
-              ),
+              child: 
+              // Text(
+              //   // "nasknas csakjc kjsd skd \nwqk\nj d djksw diwjdns djwsd sjcjc\n"
+              //   // +"sncjkswc dsjkc kswdcs kackc wn DKKk XWDWQEFE",
+              //   _data.description,
+              //   style: TextStyle(
+              //     color: Colors.white,
+              //     fontSize: 14.0,
+              //     fontWeight: FontWeight.w400,
+              //     fontStyle: FontStyle.normal
+              //   ),
+              // ),
+              Html(
+                data: """
+                  <div>${_data.description}</div>
+                """,
+                style: {
+                  "div":Style(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                  ),
+                },
+                 onLinkTap: (url) async
+                 {
+                   await _launchURL(url);
+                 },
+                onImageTap: (src){
+                  // Navigator.of(context)
+                  //   .push(MaterialPageRoute(builder: (context) => FullImage(src,"file")));
+                },
+              )
             ),
 
             SizedBox(height: 32.0,),
@@ -685,8 +714,8 @@ class _FullBlogState extends State<FullBlog> {
               onTap: (){
                 if(uid==null)
                 {
-                  show("You are not logged in!");
-                  flushbar..show(context);
+                  _helper.show("You are not logged in!");
+                  _helper.flushbar.show(context);
                 }
                 else{
                   _showDialog();

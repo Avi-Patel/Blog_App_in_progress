@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:blogging_app/login_register/Login.dart';
+
+import '../helper_functions.dart';
 
 class VerifyEmail extends StatefulWidget 
 {
@@ -11,21 +11,8 @@ class VerifyEmail extends StatefulWidget
 
 class _VerifyEmailState extends State<VerifyEmail> 
 {
-  var flushbar;
-  void show(String s1) 
-  {
-      flushbar = Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text(
-        s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-    );
-  }
+
+  Helper _helper= Helper();
 
   Future<void> _sentmail(BuildContext context) async 
   {
@@ -37,8 +24,8 @@ class _VerifyEmailState extends State<VerifyEmail>
     } 
     catch (e) 
     {
-      show("An error occured while trying to send email verification");
-      flushbar..show(context);
+      _helper.show("An error occured while trying to send email verification");
+      _helper.flushbar..show(context);
       print(e.message);
     }
   }

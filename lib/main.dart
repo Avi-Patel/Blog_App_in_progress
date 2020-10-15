@@ -2,8 +2,8 @@ import 'dart:ui';
 import 'package:blogging_app/Blog/Blog_templete.dart';
 import 'package:blogging_app/Blog/Show_blogs.dart';
 import 'package:blogging_app/Profile/user_profile.dart';
+import 'package:blogging_app/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,7 +50,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-
+  Helper _helper=Helper();
   User _user;
   String name = null;
   String email = null;
@@ -77,23 +77,7 @@ class _HomePageState extends State<HomePage> {
     'Blogs',
     'Blogs'
   ];
-  var flushbar;
-  void show(String s1) {
-    flushbar = Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(
-        Icons.info_outline,
-        color: Colors.blue,
-      ),
-      messageText: Text(
-        s1,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-    );
-  }
+  
 
   void _singin() {
     Navigator.of(context).pop();
@@ -107,8 +91,8 @@ class _HomePageState extends State<HomePage> {
       print(e);
     });
     print("User logged out");
-    show("You are logged out:)");
-    flushbar.show(context);
+    _helper.show("You are logged out:)");
+    _helper.flushbar.show(context);
     _getname();
   }
 
@@ -119,7 +103,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (_user != null && _user.emailVerified) {
-      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+      await FirebaseFirestore.instance
         .collection('users')
         .doc(_user.uid)
         .get()
@@ -164,12 +148,11 @@ class _HomePageState extends State<HomePage> {
    
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if(widget.msg!=null)
     {
-      show(widget.msg);
-      flushbar.show(context);
+      _helper.show(widget.msg);
+      _helper.flushbar.show(context);
     }
     _user=FirebaseAuth.instance.currentUser;
     _getname();
@@ -368,8 +351,8 @@ class _HomePageState extends State<HomePage> {
               .then((value){
                 if(value!=null)
                 {
-                  show(value);
-                  flushbar.show(context);
+                  _helper.show(value);
+                  _helper.flushbar.show(context);
                 }
               });
           }
@@ -446,7 +429,7 @@ class _HomePageState extends State<HomePage> {
               ),
               onTap: (){
                 Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => ShowBlogs("${blogArr[index]}"+" "+"${blogExtention[index]}")));
+                  .push(MaterialPageRoute(builder: (context) => ShowBlogs("${blogArr[index]}"+" "+"${blogExtention[index]}",index)));
               }
             );
           }),

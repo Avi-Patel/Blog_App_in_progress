@@ -1,10 +1,10 @@
 import 'package:blogging_app/Profile/change_pro_pic.dart';
 import 'package:blogging_app/Profile/personal_blog.dart';
 import 'package:blogging_app/Profile/saved_blogs.dart';
+import 'package:blogging_app/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {
@@ -14,28 +14,13 @@ class UserProfile extends StatefulWidget {
 
 class _UserProfileState extends State<UserProfile> {
 
-  var uid=null;
+  Helper _helper=Helper();
+  var uid;
   String _url="https://png.pngitem.com/pimgs/s/506-5067022_sweet-shap-profile-placeholder-hd-png-download.png";
-  var flushbar;
   var _yourblogs=0;
   var _savedblogs=0;
   var _totallikes=0;
   var _name="...";
-
-  void show(String s1) 
-  {
-      flushbar = Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text(
-        s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-    );
-  }
 
   Future<void> _profileUrl() async
   {
@@ -70,8 +55,8 @@ class _UserProfileState extends State<UserProfile> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
   }
   Future<void> _fecthSavedBlogs() async
@@ -89,8 +74,8 @@ class _UserProfileState extends State<UserProfile> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
   }
   Future<void> _fecthTotalLikes() async
@@ -108,8 +93,8 @@ class _UserProfileState extends State<UserProfile> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
   }
 
@@ -126,7 +111,8 @@ class _UserProfileState extends State<UserProfile> {
       })
       .catchError((e){
         print("error : "+e.toString());
-        show("Opps!! something went wrong");
+        _helper.show("Opps!! something went wrong");
+        _helper.flushbar.show(context);
       });
   }
   Future<void> _updateName() async
@@ -139,14 +125,15 @@ class _UserProfileState extends State<UserProfile> {
       })
       .catchError((e){
         print("error : "+e.toString());
-        show("Opps!! something went wrong");
+        _helper.show("Opps!! something went wrong");
+        _helper.flushbar.show(context);
       });
   }
    
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    uid=null;
     if(FirebaseAuth.instance.currentUser!=null)
     {
       setState(() {
@@ -521,8 +508,8 @@ class _UserProfileState extends State<UserProfile> {
                         print(message);
                         if(message!=null)
                         {
-                          show(message);
-                          flushbar.show(context);
+                          _helper.show(message);
+                          _helper.flushbar.show(context);
                           _profileUrl();
                         }                        
                       });

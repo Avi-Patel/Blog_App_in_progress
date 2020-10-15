@@ -11,6 +11,7 @@ class FutureDataModel {
   var numOfRating;
   var date;
   var likes;
+  var minsRead;
 
   FutureDataModel.fromSnapshot(DocumentSnapshot snapshot) {
     this.description = snapshot.data()['description'];
@@ -22,6 +23,7 @@ class FutureDataModel {
     this.numOfRating=snapshot.data()['#ratings'];
     this.date=snapshot.data()['date'];
     this.likes=snapshot.data()['likes'];
+    this.likes=snapshot.data()['minsRead'];
   }
 
   Map toMap() {
@@ -35,6 +37,7 @@ class FutureDataModel {
       "#ratings": this.numOfRating,
       "date": this.date,
       "likes": this.likes,
+      "minsRead": this.minsRead,
     };
     return map;
 

@@ -1,12 +1,11 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class BlogDetails{
   String _type;
   String _title;
   String _description;
   List<File> _photos=new List();
+
 
   BlogDetails({type,title,description,photos});
 

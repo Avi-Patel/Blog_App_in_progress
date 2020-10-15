@@ -1,15 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import '../helper_functions.dart';
 import 'Blog_details.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io' as io;
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:async';
-import 'package:flushbar/flushbar.dart';
+import 'package:html_editor/html_editor.dart';
 
 class BlogTile extends StatefulWidget {
   @override
@@ -17,17 +18,14 @@ class BlogTile extends StatefulWidget {
 }
 
 class _BlogTileState extends State<BlogTile> {
-  @override
 
+  ScrollController _scrolctrl = ScrollController();
+  GlobalKey<HtmlEditorState> keyEditor = GlobalKey();
   BlogDetails _blog=new BlogDetails();
+  Helper _helper=Helper();
+  String result = "";
   bool _isLoading=false;
   final GlobalKey<FormState> _fbKey1 = GlobalKey<FormState>();
-  final GlobalKey<FormState> _fbKey2 = GlobalKey<FormState>();
-  SpinKitFadingCircle spinkit = SpinKitFadingCircle(
-    color: Colors.blue,
-    size: 50.0,
-    duration: Duration(milliseconds: 3000),
-  );
   final types=[
     "Tech Blogs",
     "Non-Tech Blogs",
@@ -38,21 +36,6 @@ class _BlogTileState extends State<BlogTile> {
     "Political Blogs",
     "Business Blogs"
   ];
-  var flushbar;
-  void show(String s1) 
-  {
-      flushbar = Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text(
-        s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-    );
-  }
 
   var _docId;
   Future<bool> _addData() async
@@ -84,15 +67,15 @@ class _BlogTileState extends State<BlogTile> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
         return false;  
       });
     })
     .catchError((e){
       print(e);
-      show("Opps!! Some error occured. Try again");
-      flushbar..show(context);
+      _helper.show("Opps!! Some error occured. Try again");
+      _helper.flushbar..show(context);
       return false;
     });
     return true;
@@ -125,20 +108,21 @@ class _BlogTileState extends State<BlogTile> {
         })
         .catchError((e){
           print(e);
-          show("Opps!! Some error occured. Try again");
-          flushbar.show(context);
+          _helper.show("Opps!! Some error occured. Try again");
+          _helper.flushbar.show(context);
         });
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar.show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar.show(context);
       });
     }
   }
 
   Future<void> _addphotoToList() async
   {
+    // ignore: invalid_use_of_visible_for_testing_member
     await ImagePicker.platform.pickImage(source: ImageSource.gallery)
     .then((_image){
       setState(() {
@@ -147,8 +131,8 @@ class _BlogTileState extends State<BlogTile> {
     })
     .catchError((e){
       print(e);
-      show("You did not selected any photo");
-      flushbar..show(context);
+      _helper.show("You did not selected any photo");
+      _helper.flushbar..show(context);
     });
   }
 
@@ -158,9 +142,9 @@ class _BlogTileState extends State<BlogTile> {
       child: Container(
         height: 150,
         width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.all(8.0),
+        margin: EdgeInsets.all(4.0),
         decoration: BoxDecoration(
-          color: Colors.white70,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
         child:Icon(
@@ -178,7 +162,7 @@ class _BlogTileState extends State<BlogTile> {
   Widget _addText(String text,double size,Color clr)
   {
     return Padding(
-      padding: EdgeInsets.fromLTRB(8.0,8.0,8.0,0.0),
+      padding: EdgeInsets.fromLTRB(4.0,8.0,4.0,0.0),
       child: Container(
         alignment: Alignment.center,
         padding: EdgeInsets.all(4.0),
@@ -212,7 +196,7 @@ class _BlogTileState extends State<BlogTile> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(4.0),
           child: Form(
             key: _fbKey1,
             autovalidateMode: AutovalidateMode.always,
@@ -220,7 +204,7 @@ class _BlogTileState extends State<BlogTile> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white70,
+                    color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(4.0),
                       topRight: Radius.circular(4.0),
@@ -255,7 +239,7 @@ class _BlogTileState extends State<BlogTile> {
                 TextFormField(
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Colors.white70,
+                    fillColor: Colors.white,
                     hintText: "Give title of few words...",
                     labelText: "Title",
                     prefixIcon: Icon(
@@ -278,7 +262,7 @@ class _BlogTileState extends State<BlogTile> {
           ),
         ),
 
-        _addText("Add your photos below",16.0,Colors.blue),
+        _addText("Add your photos for gallery below",16.0,Colors.blue),
 
         _blog.getSize() !=0?  ListView.builder(
           itemCount: _blog.getSize(),
@@ -292,7 +276,7 @@ class _BlogTileState extends State<BlogTile> {
                 child: new Container(
                   height: MediaQuery.of(context).size.width,
                   width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.fromLTRB(8.0,8.0,8.0,0.0),
+                  margin: EdgeInsets.fromLTRB(4.0,8.0,4.0,0.0),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.blue,
@@ -338,43 +322,55 @@ class _BlogTileState extends State<BlogTile> {
 
         Padding(
           padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,80.0),
-          child: Form(
-            key: _fbKey2,
-            child: TextFormField(
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white70,
-                hintText: "Write description here",
-                labelText: "Description",
-                prefixIcon: Icon(
-                  Icons.description,
-                  size: 30.0,
-                ),
+          child: 
+          // Form(
+          //   key: _fbKey2,
+          //   child: TextFormField(
+          //     decoration: InputDecoration(
+          //       filled: true,
+          //       fillColor: Colors.white70,
+          //       hintText: "Write description here",
+          //       labelText: "Description",
+          //       prefixIcon: Icon(
+          //         Icons.description,
+          //         size: 30.0,
+          //       ),
 
-              ),
-              maxLength: 1000,
-              maxLines: null,
-              validator: (value) {
-                if (value.toString().length==0) {
-                  return "Description should be atleast 100 words long.";
-                }
-              },
-              onChanged: (value) {
-                setState(() {
-                  _blog.setDescription(value);
-                });
-              },
-            ),
+          //     ),
+          //     maxLength: 1000,
+          //     maxLines: null,
+          //     validator: (value) {
+          //       if (value.toString().length==0) {
+          //         return "Description should be atleast 100 words long.";
+          //       }
+          //     },
+          //     onChanged: (value) {
+          //       setState(() {
+          //         _blog.setDescription(value);
+          //       });
+          //     },
+          //   ),
+          // ),
+          HtmlEditor(
+            hint: "write description here...",
+            //value: "text content initial, if any",
+            key: keyEditor,
+            height: 500,
           ),
         ),
 
+        SizedBox(
+          height: 200.0,
+        )
 
       ],
     );
   }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white24,
+      backgroundColor: Colors.white30,
       appBar: AppBar(
         centerTitle: true,
         title: Row(
@@ -388,7 +384,6 @@ class _BlogTileState extends State<BlogTile> {
             ),
           ],
         ),
-        leading: Container(),
       ),
       floatingActionButton: FlatButton(
         color: Colors.green,
@@ -413,27 +408,70 @@ class _BlogTileState extends State<BlogTile> {
           ],
         ),
         onPressed: () async{
-          if(_isLoading==false && _fbKey1.currentState.validate() && _fbKey2.currentState.validate())
-          {
-            setState(() {
-              _isLoading=true;
-            });
-            var answer=await _addData();
-            if(answer==true)
-            {
-              await _upload();
-              Navigator.of(context).pop("It may take a while to reflact on home page");  
-            }              
+          var result=await keyEditor.currentState.getText();
+          print(result);
+          String s=keyEditor.currentState.text.toString();
+          bool go=true;
+          String s1="";
+          for(int i=s.length-100;i<s.length;i++)
+          { 
+            s1+=s[i];
           }
+          print(s.length);
+          print(s1);
+          int i=0;
+          while(go)
+          { 
+            if(s.contains("<img") && s.contains(".jpg\">"))
+            {
+              int r=s.indexOf("<img");
+              int l=s.indexOf(".jpg\">");
+              s=s.replaceRange(r, l+6, "");
+              print("r="+r.toString()+", l="+l.toString());
+            }
+            else go=false;
+            i=i+1;
+            if(i==10) break;
+          }
+          print(s);
+          if(result.toString().length==0)
+          {
+            _helper.show("description can not be empty");
+            _helper.flushbar.show(context);
+
+          }
+          // else if(_isLoading==false && _fbKey1.currentState.validate())
+          // {
+          //   _blog.setDescription(result.toString());
+          //   print(_blog.getDescription());
+          //   setState(() {
+          //     _isLoading=true;
+          //   });
+          //   var answer=await _addData();
+          //   if(answer==true)
+          //   {
+          //     await _upload();
+          //     Navigator.of(context).pop("It may take a while to reflact on home page");  
+          //   }              
+          // }
         }
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
       body:_isLoading==true?
-      Center(child: spinkit,)
+      Center(child: _helper.spinkit,)
       :
-      SingleChildScrollView(
-        physics: ScrollPhysics(),
-        child: _body()
+      PrimaryScrollController(
+        controller: _scrolctrl,
+        child: CupertinoScrollbar(
+          thickness: 20.0,
+          thicknessWhileDragging: 16.0,
+          radius: Radius.circular(10.0),
+          radiusWhileDragging: Radius.circular(10.0),
+          child: SingleChildScrollView(
+            physics: ScrollPhysics(),
+            child: _body(),
+          ),
+        ),
       ),
     );
   }

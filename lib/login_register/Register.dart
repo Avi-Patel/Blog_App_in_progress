@@ -1,12 +1,10 @@
-import 'package:blogging_app/login_register/Login.dart';
+import 'package:blogging_app/helper_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Register extends StatefulWidget 
 {
@@ -16,33 +14,12 @@ class Register extends StatefulWidget
 
 class _RegisterState extends State<Register> with SingleTickerProviderStateMixin 
 {
+  Helper _helper = Helper();
   String _pass;
   String _email;
   String _name;
-  bool eye_closed=true,_isLoading=false;
+  bool _eyeClosed=true,_isLoading=false;
   final _formKey = GlobalKey<FormState>();
-  SpinKitFadingCircle spinkit = SpinKitFadingCircle(
-    color: Colors.blue,
-    size: 50.0,
-    duration: Duration(milliseconds: 2000),
-  );
-
-  var flushbar;
-  void show(String s1) 
-  {
-    flushbar=Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text( 
-        s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-    );
-  }
 
   Future<void> _register() async 
   {
@@ -77,8 +54,8 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
       .catchError((e){
         print("An error occured while trying to send email verification");
         print(e.message);
-        show("An error occured while trying to send email verification");
-        flushbar.show(context);
+        _helper.show("An error occured while trying to send email verification");
+        _helper.flushbar.show(context);
       });
     })
     .catchError((signUpError) {
@@ -86,23 +63,23 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
       if(signUpError.code.toString() == "email-already-in-use")
       {
         print(signUpError.code.toString());
-        show("Email already in use!!");
-        flushbar.show(context);
+        _helper.show("Email already in use!!");
+        _helper.flushbar.show(context);
       }
       else if(signUpError.code.toString() == "weak-password")
       {
-        show("Password is weak!!");
-        flushbar.show(context);
+        _helper.show("Password is weak!!");
+        _helper.flushbar.show(context);
       }
       else if(signUpError.code.toString() == "invalid-email")
       {
-        show("email id invalid!!");
-        flushbar.show(context);
+        _helper.show("email id invalid!!");
+        _helper.flushbar.show(context);
       }
       else
       {
-        show("something went wrong!!");
-        flushbar.show(context);
+        _helper.show("something went wrong!!");
+        _helper.flushbar.show(context);
       }
     });    
     print(_isLoading);
@@ -213,15 +190,15 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          eye_closed==true?
+                          _eyeClosed==true?
                           Icons.visibility_off
                           :
                           Icons.visibility,
                         ),
                         onPressed: (){
                           setState(() {
-                            if(eye_closed==true) eye_closed=false;
-                            else eye_closed=true;
+                            if(_eyeClosed==true) _eyeClosed=false;
+                            else _eyeClosed=true;
                           });
                         },
                       ),
@@ -231,7 +208,7 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
                         ),
                       ),
                     ),
-                    obscureText: eye_closed,
+                    obscureText: _eyeClosed,
                     validator: (value) {
                       if (value.toString().length==0) {
                         return "Password can not be empty";
@@ -314,7 +291,7 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
       ),
       backgroundColor: Colors.black,
       body:_isLoading==true?
-      Center(child: spinkit)
+      Center(child: _helper.spinkit)
       :
       Center(
         child: SingleChildScrollView(

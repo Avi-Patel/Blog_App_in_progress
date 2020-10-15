@@ -1,9 +1,8 @@
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../helper_functions.dart';
 import 'VerifyEmail.dart';
 import '../main.dart';
 import 'Register.dart';
@@ -16,32 +15,12 @@ class Login extends StatefulWidget
 
 class _LoginState extends State<Login>
 {
+  Helper _helper=Helper();
   String _email="";
   String _pass="";
-  bool eye_closed=true,_isLoading=false;
+  bool _eyeClosed=true,_isLoading=false;
   final _formKey = GlobalKey<FormState>();
 
-  SpinKitFadingCircle spinkit = SpinKitFadingCircle(
-    color: Colors.blue,
-    size: 50.0,
-    duration: Duration(milliseconds: 2000),
-  );
-
-  var flushbar;
-  void show(String s1) 
-  {
-      flushbar = Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text(
-        s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-    );
-  }
 
   Future<void> _login() async 
   {
@@ -65,8 +44,8 @@ class _LoginState extends State<Login>
           .then((value){
             if(value!=null)
             {
-              show(value);
-              flushbar.show(context);
+              _helper.show(value);
+              _helper.flushbar.show(context);
             }
           });
       } 
@@ -84,8 +63,8 @@ class _LoginState extends State<Login>
       setState(() {
         _isLoading=false;
       });
-      show("Incorrect email or password!!");
-      flushbar..show(context);
+      _helper.show("Incorrect email or password!!");
+      _helper.flushbar.show(context);
     });
   }
 
@@ -93,8 +72,8 @@ class _LoginState extends State<Login>
   {
     var ans = EmailValidator.validate(_email.toString());
     if (ans == false) {
-      show("Enter correct email");
-      flushbar..show(context);
+      _helper.show("Enter correct email");
+      _helper.flushbar..show(context);
       return;
     }
     print(_email.toString());
@@ -106,8 +85,8 @@ class _LoginState extends State<Login>
     .then((_snapshot) async{
       if (_snapshot.size == 0) 
       {
-        show("Email does not exist in our database.");
-        flushbar..show(context);
+        _helper.show("Email does not exist in our database.");
+        _helper.flushbar..show(context);
       }
       else
       {
@@ -115,36 +94,23 @@ class _LoginState extends State<Login>
         .then((_){
           print(
             "Password reset link has been sent to your email. Reset and try login again");
-          show(
+          _helper.show(
               "Password reset link has been sent to your email. Reset and try login again");
-          flushbar..show(context);
+          _helper.flushbar.show(context);
         })
         .catchError((e){
           print(e);
-          show("Can not sent link right now. Try again");
-          flushbar..show(context);
+          _helper.show("Can not sent link right now. Try again");
+          _helper.flushbar..show(context);
         });
       }
     })
     .catchError((e){
-      show("Opps!! Some error occured. Try again");
-      flushbar..show(context);
+      _helper.show("Opps!! Some error occured. Try again");
+      _helper.flushbar..show(context);
     });
   }
 
-  @override
-  void initState() 
-  {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  void dispose() 
-  {
-    // TODO: implement dispose
-    super.dispose();
-  }
 
   Widget _body() 
   {
@@ -202,7 +168,8 @@ class _LoginState extends State<Login>
                       
                     ),
                     validator: (value) {
-                      if (EmailValidator.validate(value) == false) {
+                      if (EmailValidator.validate(value) == false) 
+                      {
                         return "Enter correct email";
                       }
                     },
@@ -229,15 +196,15 @@ class _LoginState extends State<Login>
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          eye_closed==true?
+                          _eyeClosed==true?
                           Icons.visibility_off
                           :
                           Icons.visibility,
                         ),
                         onPressed: (){
                           setState(() {
-                            if(eye_closed==true) eye_closed=false;
-                            else eye_closed=true;
+                            if(_eyeClosed==true) _eyeClosed=false;
+                            else _eyeClosed=true;
                           });
                         },
                       ),
@@ -247,7 +214,7 @@ class _LoginState extends State<Login>
                         ),
                       ),
                     ),
-                    obscureText: eye_closed,
+                    obscureText: _eyeClosed,
                     validator: (value) {
                       if (value.isEmpty) {
                         return "Password can not be empty";
@@ -301,8 +268,8 @@ class _LoginState extends State<Login>
                             .then((value){
                               if(value!=null)
                               {
-                                show(value);
-                                flushbar.show(context);
+                                _helper.show(value);
+                                _helper.flushbar.show(context);
                               }
                             });
                         },
@@ -347,54 +314,6 @@ class _LoginState extends State<Login>
                   SizedBox(
                     height: 15.0,
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Text(
-                  //       "Forgot password? ",
-                  //       style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
-                  //     ),
-                  //     FlatButton(
-                  //       color: Colors.blue,
-                  //       splashColor: Colors.white,
-                  //       minWidth: 100.0,
-                  //       child: Text(
-                  //         "Click Here ",
-                  //         style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
-                  //       ),
-                  //       onPressed: (){
-                  //         FocusScope.of(context).unfocus();
-                  //         _forgotpass();
-                  //       } 
-                  //     ),
-                  //   ],
-                  // ),
-                  // SizedBox(
-                  //   height: 15.0,
-                  // ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Text(
-                  //       "Don't have a account? ",
-                  //       style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600),
-                  //     ),
-                  //     FlatButton(
-                  //       color: Colors.blue,
-                  //       splashColor: Colors.white,
-                  //       minWidth: 100.0,
-                  //       child: Text(
-                  //         "Register",
-                  //         style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
-                  //       ),
-                  //       onPressed: () {
-                  //         FocusScope.of(context).unfocus();
-                  //         Navigator.of(context).push(
-                  //           MaterialPageRoute(builder: (context) => Register()));
-                  //       }
-                  //     ),
-                  //   ],
-                  // ),
                 ],
               ),
             ),
@@ -417,7 +336,7 @@ class _LoginState extends State<Login>
       ),      
       backgroundColor: Colors.black,
       body:_isLoading==true?
-      Center(child: spinkit)
+      Center(child: _helper.spinkit)
       :
       Center(
         child: SingleChildScrollView(

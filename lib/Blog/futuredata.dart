@@ -1,49 +1,39 @@
 import 'package:blogging_app/Blog/full_blog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../helper_functions.dart';
 import 'blog_data_model.dart';
+import 'package:blogging_app/image_urls.dart';
 
+// ignore: must_be_immutable
 class FutureData extends StatefulWidget {
   final FutureDataModel _data;
   String _type,_indicator;
-  FutureData(this._data,this._type,this._indicator);
+  var _index;
+  FutureData(this._data,this._type,this._indicator,this._index);
   @override
-  _FutureDataState createState() => _FutureDataState(_data,_type,_indicator);
+  _FutureDataState createState() => _FutureDataState(_data,_type,_indicator,_index);
 }
 
 class _FutureDataState extends State<FutureData> {
   final FutureDataModel _data;
   String _type,_indicator;
-  _FutureDataState(this._data,this._type,this._indicator);
+  var _index;
+  _FutureDataState(this._data,this._type,this._indicator,this._index);
 
   Future<FutureDataModel> _load() async {
     await _data.loadUser();
     return _data;
   }
 
+  Urls _urls=Urls();
+  Helper _helper=Helper();
   bool liked=false;
   String type;
-  var uid=null;
+  var uid;
   bool  saved=false;
-
-  var flushbar;
-  void show(String s1) 
-  {
-      flushbar = Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text(
-        s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-    );
-  }
   
   Future<void> _checklike() async
   {
@@ -75,8 +65,8 @@ class _FutureDataState extends State<FutureData> {
   {
     if(uid==null)
     {
-      show("You are not logged in!");
-      flushbar..show(context);
+      _helper.show("You are not logged in!");
+      _helper.flushbar..show(context);
       return;
     }
     if(liked==false)
@@ -102,8 +92,8 @@ class _FutureDataState extends State<FutureData> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
     }
     else
@@ -129,8 +119,8 @@ class _FutureDataState extends State<FutureData> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
     }
   }
@@ -166,8 +156,8 @@ class _FutureDataState extends State<FutureData> {
   {
     if(uid==null)
     {
-      show("You are not logged in!");
-      flushbar..show(context);
+      _helper.show("You are not logged in!");
+      _helper.flushbar..show(context);
       return;
     }
     if(saved==false)
@@ -192,8 +182,8 @@ class _FutureDataState extends State<FutureData> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
       
     }
@@ -219,8 +209,8 @@ class _FutureDataState extends State<FutureData> {
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar..show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
       });
     }
   }
@@ -259,8 +249,8 @@ class _FutureDataState extends State<FutureData> {
                   })
                   .catchError((e){
                     print("error : " +e.toString());
-                    show("Opps!! Something went wrong");
-                    flushbar.show(context);
+                    _helper.show("Opps!! Something went wrong");
+                    _helper.flushbar.show(context);
                   });
               }
             });
@@ -269,8 +259,8 @@ class _FutureDataState extends State<FutureData> {
       })
       .catchError((e){
         print("error : " +e.toString());
-        show("Opps!! Something went wrong");
-        flushbar.show(context);
+        _helper.show("Opps!! Something went wrong");
+        _helper.flushbar.show(context);
       });
     
     await FirebaseFirestore.instance
@@ -290,14 +280,14 @@ class _FutureDataState extends State<FutureData> {
       })
       .then((_){
         print("Blog removed from your saved blogs");
-        show("Blog removed from your saved blogs");
-        flushbar.show(context);
+        _helper.show("Blog removed from your saved blogs");
+        _helper.flushbar.show(context);
       })
       .catchError((e)
       {
         print("error : " +e.toString());
-        show("Opps!! Something went wrong");
-        flushbar.show(context);
+        _helper.show("Opps!! Something went wrong");
+        _helper.flushbar.show(context);
       });
   }
 
@@ -362,7 +352,7 @@ class _FutureDataState extends State<FutureData> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    uid=null;
     super.initState();
     if(FirebaseAuth.instance.currentUser!=null)
     {
@@ -384,7 +374,6 @@ class _FutureDataState extends State<FutureData> {
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -409,7 +398,7 @@ class _FutureDataState extends State<FutureData> {
                   onTap: (){
                     Navigator.of(context)
                       .push(MaterialPageRoute(
-                        builder: (context) => FullBlog(_data,_type,_indicator),
+                        builder: (context) => FullBlog(_data,_type,_indicator,_index),
 
                       ))
                       .then((_){
@@ -428,8 +417,8 @@ class _FutureDataState extends State<FutureData> {
                         child: _data.photosUrl.length==0?
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8.0),
-                            child: Image.asset(
-                              'assets/$type.jpg',
+                            child: CachedNetworkImage(
+                              imageUrl:_urls.urls[_index],
                               fit: BoxFit.fill,
                             ),
                           )
@@ -473,7 +462,7 @@ class _FutureDataState extends State<FutureData> {
                             Row(
                               children: [
                                 Text(
-                                  "${(_data.description.length/100).toInt()+1}"+" min read ",
+                                  "${(_data.description.length~/100)+1}"+" min read ",
                                   style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,

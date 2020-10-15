@@ -1,14 +1,13 @@
-import 'dart:math';
 import 'dart:io' as io;
+import 'package:blogging_app/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 
+// ignore: must_be_immutable
 class ChangeProPic extends StatefulWidget {
   String _url;
   ChangeProPic(this._url);
@@ -20,33 +19,14 @@ class _ChangeProPicState extends State<ChangeProPic> {
   String _url;
   _ChangeProPicState(this._url);
 
+  Helper _helper=Helper();
   String uid=FirebaseAuth.instance.currentUser.uid;
-  var flushbar;
   bool loading=false;
-
-  SpinKitFadingCircle spinkit = SpinKitFadingCircle(
-    color: Colors.blue,
-    size: 50.0,
-    duration: Duration(milliseconds: 3000),
-  );
   
-  void show(String s1) 
-  {
-      flushbar = Flushbar(
-      margin: EdgeInsets.all(8),
-      borderRadius: 8,
-      duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
-      messageText: Text(
-        s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
-      ),
-      backgroundColor: Colors.black87,
-    );
-  }
 
   Future<void> _uploadProPic() async
   {
+    // ignore: invalid_use_of_visible_for_testing_member
     await ImagePicker.platform.pickImage(source: ImageSource.gallery)
     .then((_image) async{
       // setState(() {
@@ -76,20 +56,20 @@ class _ChangeProPicState extends State<ChangeProPic> {
         })
         .catchError((e){
           print(e);
-          show("Opps!! Some error occured. Try again");
-          flushbar.show(context);
+          _helper.show("Opps!! Some error occured. Try again");
+          _helper.flushbar.show(context);
         });
       })
       .catchError((e){
         print(e);
-        show("Opps!! Some error occured. Try again");
-        flushbar.show(context);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar.show(context);
       });
     })
     .catchError((e){
       print(e);
-      show("You did not selected any photo");
-      flushbar..show(context);
+      _helper.show("You did not selected any photo");
+      _helper.flushbar..show(context);
     });    
   }
 
@@ -107,7 +87,7 @@ class _ChangeProPicState extends State<ChangeProPic> {
       backgroundColor: Colors.black,
       body: loading==true?
       Center(
-        child: spinkit,
+        child: _helper.spinkit,
       )
       :
       Center(

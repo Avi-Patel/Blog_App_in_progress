@@ -2,19 +2,21 @@ import 'package:blogging_app/Blog/blog_data_model.dart';
 import 'package:blogging_app/Blog/futuredata.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' as pull;
 
+// ignore: must_be_immutable
 class ShowPersonalBlogs extends StatefulWidget {
   String type;
-  ShowPersonalBlogs(this.type);
+  var _index;
+  ShowPersonalBlogs(this.type,this._index);
   @override
-  _ShowPersonalBlogsState createState() => _ShowPersonalBlogsState();
+  _ShowPersonalBlogsState createState() => _ShowPersonalBlogsState(_index);
 }
 
 class _ShowPersonalBlogsState extends State<ShowPersonalBlogs> {
-
+  var _index;
+  _ShowPersonalBlogsState(this._index);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,20 +37,21 @@ class _ShowPersonalBlogsState extends State<ShowPersonalBlogs> {
             ),
             onTap: ()=>showSearch(
               context: context, 
-              delegate: Datasearch(widget.type),              
+              delegate: Datasearch(widget.type,_index),              
             ),
           )
         ],
       ),
       backgroundColor: Colors.black,
-      body: Streambuilder("",widget.type),
+      body: Streambuilder("",widget.type,_index),
     );
   }
 }
 
 class Datasearch extends SearchDelegate<String>{
+  var _index;
   String type;
-  Datasearch(this.type);
+  Datasearch(this.type,this._index);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -80,31 +83,30 @@ class Datasearch extends SearchDelegate<String>{
 
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
     return null;
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     
-    return Streambuilder(query,type);
+    return Streambuilder(query,type,_index);
   }
 
 }
 
-
-
-
+// ignore: must_be_immutable
 class Streambuilder extends StatefulWidget {
   String qry,type;
-  Streambuilder(this.qry,this.type);
+  var _index;
+  Streambuilder(this.qry,this.type,this._index);
   @override
-  _StreambuilderState createState() => _StreambuilderState(qry,type);
+  _StreambuilderState createState() => _StreambuilderState(qry,type,_index);
 }
 
 class _StreambuilderState extends State<Streambuilder> {
   String qry,type;
-  _StreambuilderState(this.qry,this.type);
+  var _index;
+  _StreambuilderState(this.qry,this.type,this._index);
 
   String uid=FirebaseAuth.instance.currentUser.uid;
 
@@ -125,7 +127,7 @@ class _StreambuilderState extends State<Streambuilder> {
           if (snapshot.hasError) {
           return Text('Something went wrong');
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (!snapshot.hasData) {
             return Text(
               "Loading...",
               style: TextStyle(
@@ -157,10 +159,11 @@ class _StreambuilderState extends State<Streambuilder> {
             child: ListView.builder(
               itemCount: list.length,
               itemBuilder: (context,index){
-                DocumentSnapshot doc=list[index];
+                // DocumentSnapshot doc=list[index];
                 FutureDataModel data=FutureDataModel.fromSnapshot(list[index]);
                 if(qry==null || list[index].data()['title'].toLowerCase().contains(qry.toLowerCase()))
-                return FutureData(data,type,"personal");
+                return FutureData(data,type,"personal",_index);
+                return SizedBox();
               },
             ),
           );

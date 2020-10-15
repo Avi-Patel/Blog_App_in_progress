@@ -47,6 +47,10 @@ dependencies:
   flushbar:
   flutter_rating_bar:
   provider:
+  html_editor:
+  flutter_html:
+  url_launcher:
+  draggable_scrollbar:
 
 
 dev_dependencies:

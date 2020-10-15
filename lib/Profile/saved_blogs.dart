@@ -119,7 +119,7 @@ class _SavedBlogsState extends State<SavedBlogs> {
                 ),
                 onTap: (){
                   Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => ShowSavedBlogs("${blogArr[index]}"+" "+"${blogExtention[index]}")));
+                    .push(MaterialPageRoute(builder: (context) => ShowSavedBlogs("${blogArr[index]}"+" "+"${blogExtention[index]}",index)));
                 }
               );
             }),
