@@ -45,6 +45,7 @@ class _BlogTileState extends State<BlogTile> {
       'userId': _user.uid.toString(),
       'title': _blog.getTitle(),
       'description': _blog.getDescription(),
+      'minsRead': _blog.getMinsRead().length~/100+1,
       'photosUrl': [],
       '#ratings':0,
       'star': 0.0,
@@ -188,7 +189,26 @@ class _BlogTileState extends State<BlogTile> {
     });
   }
 
-
+  String _removeImgText(String s)
+  {
+    bool go=true;
+    // print(s.length);;
+    int i=0;
+    while(go)
+    { 
+      if(s.contains("<img") && s.contains(".jpg\">"))
+      {
+        int r=s.indexOf("<img");
+        int l=s.indexOf(".jpg\">");
+        s=s.replaceRange(r, l+6, "");
+        print("r="+r.toString()+", l="+l.toString());
+      }
+      else go=false;
+      i=i+1;
+      if(i==10) break;
+    }
+    return s;
+  }
 
   Widget _body()
   {
@@ -322,36 +342,7 @@ class _BlogTileState extends State<BlogTile> {
 
         Padding(
           padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,80.0),
-          child: 
-          // Form(
-          //   key: _fbKey2,
-          //   child: TextFormField(
-          //     decoration: InputDecoration(
-          //       filled: true,
-          //       fillColor: Colors.white70,
-          //       hintText: "Write description here",
-          //       labelText: "Description",
-          //       prefixIcon: Icon(
-          //         Icons.description,
-          //         size: 30.0,
-          //       ),
-
-          //     ),
-          //     maxLength: 1000,
-          //     maxLines: null,
-          //     validator: (value) {
-          //       if (value.toString().length==0) {
-          //         return "Description should be atleast 100 words long.";
-          //       }
-          //     },
-          //     onChanged: (value) {
-          //       setState(() {
-          //         _blog.setDescription(value);
-          //       });
-          //     },
-          //   ),
-          // ),
-          HtmlEditor(
+          child: HtmlEditor(
             hint: "write description here...",
             //value: "text content initial, if any",
             key: keyEditor,
@@ -410,50 +401,28 @@ class _BlogTileState extends State<BlogTile> {
         onPressed: () async{
           var result=await keyEditor.currentState.getText();
           print(result);
-          String s=keyEditor.currentState.text.toString();
-          bool go=true;
-          String s1="";
-          for(int i=s.length-100;i<s.length;i++)
-          { 
-            s1+=s[i];
-          }
-          print(s.length);
-          print(s1);
-          int i=0;
-          while(go)
-          { 
-            if(s.contains("<img") && s.contains(".jpg\">"))
-            {
-              int r=s.indexOf("<img");
-              int l=s.indexOf(".jpg\">");
-              s=s.replaceRange(r, l+6, "");
-              print("r="+r.toString()+", l="+l.toString());
-            }
-            else go=false;
-            i=i+1;
-            if(i==10) break;
-          }
-          print(s);
+          String removed=_removeImgText(result);
+          print(removed);
           if(result.toString().length==0)
           {
             _helper.show("description can not be empty");
             _helper.flushbar.show(context);
-
           }
-          // else if(_isLoading==false && _fbKey1.currentState.validate())
-          // {
-          //   _blog.setDescription(result.toString());
-          //   print(_blog.getDescription());
-          //   setState(() {
-          //     _isLoading=true;
-          //   });
-          //   var answer=await _addData();
-          //   if(answer==true)
-          //   {
-          //     await _upload();
-          //     Navigator.of(context).pop("It may take a while to reflact on home page");  
-          //   }              
-          // }
+          else if(_isLoading==false && _fbKey1.currentState.validate())
+          {
+            _blog.setDescription(result.toString());
+            _blog.setMinsRead(removed);
+            print(_blog.getDescription());
+            setState(() {
+              _isLoading=true;
+            });
+            var answer=await _addData();
+            if(answer==true)
+            {
+              await _upload();
+              Navigator.of(context).pop("It may take a while to reflact on home page");  
+            }              
+          }
         }
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,

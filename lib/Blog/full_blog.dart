@@ -588,7 +588,7 @@ class _FullBlogState extends State<FullBlog> {
               subtitle: Row(
                 children: [
                   Text(
-                    "${(_data.description.length~/100)+1}"+" min read ",
+                    "${_data.minsRead}"+" min read ",
                     // "3"+" min read ",
                     style: TextStyle(
                     color: Colors.white,

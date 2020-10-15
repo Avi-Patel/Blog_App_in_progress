@@ -462,7 +462,7 @@ class _FutureDataState extends State<FutureData> {
                             Row(
                               children: [
                                 Text(
-                                  "${(_data.description.length~/100)+1}"+" min read ",
+                                  "${_data.minsRead}"+" min read ",
                                   style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w400,

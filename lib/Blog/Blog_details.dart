@@ -4,6 +4,7 @@ class BlogDetails{
   String _type;
   String _title;
   String _description;
+  String _minsRead;
   List<File> _photos=new List();
 
 
@@ -20,6 +21,10 @@ class BlogDetails{
   void setDescription(String description)
   {
     this._description=description;
+  }
+  void setMinsRead(String minsRead)
+  {
+    this._minsRead=minsRead;
   }
   void setPhotos(List<File> photos)
   {
@@ -44,6 +49,10 @@ class BlogDetails{
   String getDescription()
   {
     return _description;
+  }
+  String getMinsRead()
+  {
+    return _minsRead;
   }
   List<File> getPhotos()
   {
