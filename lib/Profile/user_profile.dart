@@ -1,3 +1,4 @@
+import 'package:blogging_app/Profile/change_password.dart';
 import 'package:blogging_app/Profile/change_pro_pic.dart';
 import 'package:blogging_app/Profile/personal_blog.dart';
 import 'package:blogging_app/Profile/saved_blogs.dart';
@@ -5,6 +6,7 @@ import 'package:blogging_app/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {
@@ -312,97 +314,165 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
-  Future<void> _showDialog()
+  Widget _createRowWithOptions(var prefix, String name, var suffix)
   {
-    var name;
-    return showDialog(
-      context: context,
-      builder: (context)=> AlertDialog(
-        title: Column(
+    return GestureDetector(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.0,vertical: 1.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.0,vertical: 16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.black,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextField(
-              style: TextStyle(
-                color: Colors.black
-              ),
-              decoration: InputDecoration(
-                enabledBorder: new UnderlineInputBorder(
-                borderSide: new BorderSide(
-                  color: Colors.black
+            Row(
+              children: [
+                Icon(
+                  prefix,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 8.0,),
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white
+                  ),
                 )
-              ),
-                labelText: "Name",
-                hintText: "Enter name here",
-                labelStyle: TextStyle(
-                  color: Colors.black
-                ),
-                hintStyle: TextStyle(
-                  color: Colors.black
-                ),
-                counterStyle: TextStyle(
-                  color: Colors.black
-                ),
-              ),
-              cursorColor: Colors.white,
-
-              onChanged: (value){
-                setState(() {
-                  name=value;
-                });
-              },
-            )
+              ],
+            ),
+            Icon(
+              suffix,
+              color: Colors.white
+            ),
           ],
         ),
-        backgroundColor: Colors.white,
-        elevation: 1.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16.0))),
-        actions: <Widget>[
-          GestureDetector(
-            child: Container(
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: new Text(
-                "Cancel",
-                style: new TextStyle(color:Colors.white,fontWeight: FontWeight.bold),
-              ),
-            ),
-            onTap: (){
-              Navigator.of(context).pop();
-            },
-          ),
-          GestureDetector(
-            child: Container(
-              padding: EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: new Text(
-                "Update",
-                style: new TextStyle(color:Colors.white,fontWeight: FontWeight.bold),
-              ),
-            ),
-            onTap: (){
-              setState(() {
-                _name=name;
-              });
-              _updateName().whenComplete((){
-                Navigator.of(context).pop();
-              });
-            },
-          ),
-        ],
       ),
+      onTap: ()
+      {
+        if(name=="Change Password")
+        {
+          Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => ChangePassword()))
+          .then((msg){
+            if(msg!=null)
+            {
+              _helper.show(msg);
+              _helper.flushbar.show(context);
+            }
+          });
+        }
+      },
     );
   }
+
+
+  Future<void> _showDialogName()
+  {
+    var value;
+    var isLoading=false;
+    return showDialog(
+      context: context,
+      builder: (context){
+        return AlertDialog(
+          title: Column(
+            children: [
+              TextField(
+                style: TextStyle(
+                  color: Colors.black
+                ),
+                decoration: InputDecoration(
+                  enabledBorder: new UnderlineInputBorder(
+                    borderSide: new BorderSide(
+                      color: Colors.black
+                    )
+                  ),
+                  labelText: "New Name",
+                  hintText: "Enter new name",
+                  labelStyle: TextStyle(
+                    color: Colors.black
+                  ),
+                  hintStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12.0,
+                  ),
+                  counterStyle: TextStyle(
+                    color: Colors.black
+                  ),
+                ),
+                cursorColor: Colors.black,
+                onChanged: (val){
+                  setState(() {
+                    value=val;
+                  });
+                },
+                onSubmitted: (value)
+                {
+                  if(value==null)
+                  {
+                    return "Name should not be empty";
+                  }
+                },
+              )
+            ],
+          ),
+          backgroundColor: Colors.white,
+          elevation: 1.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16.0))),
+          actions: <Widget>[
+            GestureDetector(
+              child: Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: new Text(
+                  "Cancel",
+                  style: new TextStyle(color:Colors.white,fontWeight: FontWeight.bold),
+                ),
+              ),
+              onTap: (){
+                Navigator.of(context).pop();
+              },
+            ),
+            GestureDetector(
+              child: Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: new Text(
+                  "Update",
+                  style: new TextStyle(color:Colors.white,fontWeight: FontWeight.bold),
+                ),
+              ),
+              onTap: (){
+                setState(() {
+                  _name=value;
+                  isLoading=true;
+                });
+                _updateName().whenComplete((){
+                  Navigator.of(context).pop();
+                });
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: false,
       body: Container(
         margin: EdgeInsets.only(top:30.0),
         child: Column(
@@ -465,7 +535,7 @@ class _UserProfileState extends State<UserProfile> {
                             ),
                           ),
                           onPressed: (){
-                            _showDialog();
+                            _showDialogName();
                           },
                         ),
                       ],
@@ -532,6 +602,7 @@ class _UserProfileState extends State<UserProfile> {
                   color: Colors.white
                 ),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -541,6 +612,11 @@ class _UserProfileState extends State<UserProfile> {
                         _totalLikes(),
                       ],
                     ),
+                    SizedBox(
+                      height:30.0,
+                    ),
+                    _createRowWithOptions(Icons.email,"Change Email",Icons.chevron_right),
+                    _createRowWithOptions(Icons.lock_open,"Change Password",Icons.chevron_right),
                   ],
                 ),
               ),
