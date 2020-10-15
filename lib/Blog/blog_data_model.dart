@@ -23,7 +23,7 @@ class FutureDataModel {
     this.numOfRating=snapshot.data()['#ratings'];
     this.date=snapshot.data()['date'];
     this.likes=snapshot.data()['likes'];
-    this.likes=snapshot.data()['minsRead'];
+    this.minsRead=snapshot.data()['minsRead'];
   }
 
   Map toMap() {

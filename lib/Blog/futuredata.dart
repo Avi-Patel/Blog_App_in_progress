@@ -354,6 +354,7 @@ class _FutureDataState extends State<FutureData> {
   void initState() {
     uid=null;
     super.initState();
+    print(_data.minsRead);
     if(FirebaseAuth.instance.currentUser!=null)
     {
       setState(() {
