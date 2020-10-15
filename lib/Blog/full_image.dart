@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:io' as io;
@@ -33,9 +35,9 @@ class _FullImageState extends State<FullImage> {
           ),
         )
         :
-        Image.file(
-          io.File(_imageUrl)
-        )
+        Image.memory(
+          Base64Decoder().convert(_imageUrl.substring(23)),
+        ),
       )
     );
   }

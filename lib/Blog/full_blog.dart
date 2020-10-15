@@ -663,20 +663,8 @@ class _FullBlogState extends State<FullBlog> {
 
             SizedBox(height: 16.0,),
             Container(
-              margin: EdgeInsets.all(8.0),
               alignment: Alignment.topLeft,
               child: 
-              // Text(
-              //   // "nasknas csakjc kjsd skd \nwqk\nj d djksw diwjdns djwsd sjcjc\n"
-              //   // +"sncjkswc dsjkc kswdcs kackc wn DKKk XWDWQEFE",
-              //   _data.description,
-              //   style: TextStyle(
-              //     color: Colors.white,
-              //     fontSize: 14.0,
-              //     fontWeight: FontWeight.w400,
-              //     fontStyle: FontStyle.normal
-              //   ),
-              // ),
               Html(
                 data: """
                   <div>${_data.description}</div>
@@ -693,8 +681,8 @@ class _FullBlogState extends State<FullBlog> {
                    await _launchURL(url);
                  },
                 onImageTap: (src){
-                  // Navigator.of(context)
-                  //   .push(MaterialPageRoute(builder: (context) => FullImage(src,"file")));
+                  Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => FullImage(src,"file")));
                 },
               )
             ),

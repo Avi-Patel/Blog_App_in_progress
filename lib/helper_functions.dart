@@ -12,12 +12,12 @@ class Helper
       margin: EdgeInsets.all(8),
       borderRadius: 8,
       duration: Duration(seconds: 3),
-      icon: Icon(Icons.info_outline,color: Colors.blue,),
+      icon: Icon(Icons.info_outline,color: Colors.blue,size: 30.0,),
       messageText: Text(
         s1,
-        style: TextStyle(color: Colors.white,fontWeight: FontWeight.w300),
+        style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500),
       ),
-      backgroundColor: Colors.white24,
+      backgroundColor: Colors.white,
     );
   }
   SpinKitFadingCircle spinkit = SpinKitFadingCircle(

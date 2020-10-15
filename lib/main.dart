@@ -238,6 +238,30 @@ class _HomePageState extends State<HomePage> {
               color: Colors.black,
               child: Column(
                 children: <Widget>[
+                  name != null? 
+                  ListTile(
+                    title: Text(
+                      "My Profile",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    leading: Icon(
+                      Icons.settings,
+                      color: Colors.white,
+                    ),
+                    onTap: () {
+                      Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => UserProfile()))
+                        .then((_){
+                          _profileUrl();
+                          _getname();
+                        });
+                    },
+                  )
+                  : Container(),
+                  Divider(
+                    color: Colors.blue,
+                    height: 0.0,
+                  ),
                   ListTile(
                     title: Text(
                       name != null ? "Logout" : "Login",
@@ -249,30 +273,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onTap: () => name == null ? _singin() : _signOut(),
                   ),
-                  Divider(
-                    color: Colors.blue,
-                    height: 0.0,
-                  ),
-                  name != null
-                      ? ListTile(
-                          title: Text(
-                            "My Profile",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          leading: Icon(
-                            Icons.settings,
-                            color: Colors.white,
-                          ),
-                          onTap: () {
-                            Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) => UserProfile()))
-                              .then((_){
-                                _profileUrl();
-                                _getname();
-                              });
-                          },
-                        )
-                      : Container(),
                   Divider(
                     color: Colors.blue,
                     height: 0.0,
@@ -289,7 +289,11 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       Navigator.of(context).pop();
                     },
-                  )
+                  ),
+                  Divider(
+                    color: Colors.blue,
+                    height: 0.0,
+                  ),
                 ],
               ),
             ),
@@ -314,36 +318,17 @@ class _HomePageState extends State<HomePage> {
       ),
       backgroundColor: Colors.black,
       drawer: _drawer(),
-      floatingActionButton: FlatButton(
-        color: Colors.blue,
+      floatingActionButton: FloatingActionButton(
+        elevation: 2.0,
+        materialTapTargetSize: MaterialTapTargetSize.padded,
         splashColor: Colors.white,
-        padding: EdgeInsets.fromLTRB(10.0,10.0,10.0,10.0),
-        shape: RoundedRectangleBorder(
-          // side: BorderSide(color: Colors.black, width: 1),
-          borderRadius: BorderRadius.circular(10),
+        child: Icon(
+          Icons.create,
+          color: Colors.white,
+          size: 30.0,
         ),
-        
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "Create New Blog",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              width: 10.0,
-            ),
-            Icon(
-              Icons.create,
-              color: Colors.white,
-            )
-          ],
-        ),
-        onPressed: () {
-          // Navigator.of(context)
-          //     .push(MaterialPageRoute(builder: (context) => BlogTile()));
-          // print(FirebaseAuth.instance.currentUser);
+        onPressed: () 
+        {
           if(FirebaseAuth.instance.currentUser!=null)
           {
             Navigator.of(context)
@@ -363,7 +348,7 @@ class _HomePageState extends State<HomePage> {
           }
         },
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Container(
         // height: MediaQuery.of(context).size.height,
         // width: MediaQuery.of(context).size.width,
