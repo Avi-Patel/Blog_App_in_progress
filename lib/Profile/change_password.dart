@@ -118,7 +118,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                       .catchError((e)
                       {
                         print(e);
-                        Navigator.of(context).pop("Something went wrong. Relogin and try again");
+                        setState(() {
+                          _isLoading=false;
+                        });
+                        _helper.show("Please enter valid old password");
+                        _helper.flushbar.show(context);
                       });
                     })
                     .catchError((e)
