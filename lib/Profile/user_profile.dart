@@ -473,135 +473,136 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
-      body: Container(
-        margin: EdgeInsets.only(top:30.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.fromLTRB(8.0,50.0,8.0,8.0),
-                  child: Container(
-                    height: 200.0,
-                    padding: EdgeInsets.fromLTRB(8.0,70.0,8.0,8.0),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(
-                        color: Colors.blue,
-                        width: 1.0
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          _name,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 20.0,
-                            fontStyle: FontStyle.normal
-                          ),
-                        ),
-                        Text(
-                          FirebaseAuth.instance.currentUser.email,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14.0,
-                            fontStyle: FontStyle.normal
-                          ),
-                        ),
-                        SizedBox(height: 16.0,),
-                        FlatButton(
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.only(top:30.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                alignment: Alignment.topCenter,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(8.0,50.0,8.0,8.0),
+                    child: Container(
+                      height: 200.0,
+                      padding: EdgeInsets.fromLTRB(8.0,70.0,8.0,8.0),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(
                           color: Colors.blue,
-                          splashColor: Colors.white,
-                          padding: EdgeInsets.fromLTRB(4.0,4.0,4.0,4.0),
-                          shape: RoundedRectangleBorder(
-                            // side: BorderSide(color: Colors.black, width: 1),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            "Edit",
-                              style: TextStyle(
+                          width: 1.0
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            _name,
+                            style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
-                              fontSize: 16.0,
+                              fontSize: 20.0,
                               fontStyle: FontStyle.normal
                             ),
                           ),
-                          onPressed: (){
-                            _showDialogName();
-                          },
-                        ),
-                      ],
+                          Text(
+                            FirebaseAuth.instance.currentUser.email,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.0,
+                              fontStyle: FontStyle.normal
+                            ),
+                          ),
+                          SizedBox(height: 16.0,),
+                          FlatButton(
+                            color: Colors.blue,
+                            splashColor: Colors.white,
+                            padding: EdgeInsets.fromLTRB(4.0,4.0,4.0,4.0),
+                            shape: RoundedRectangleBorder(
+                              // side: BorderSide(color: Colors.black, width: 1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              "Edit",
+                                style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.0,
+                                fontStyle: FontStyle.normal
+                              ),
+                            ),
+                            onPressed: (){
+                              _showDialogName();
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                InkWell(
-                  splashColor: Colors.white,
-                  child:Container(
-                    width: 100.0,
-                    height: 100.0,
-                    decoration:BoxDecoration(
-                      border: Border.all(
+                  InkWell(
+                    splashColor: Colors.white,
+                    child:Container(
+                      width: 100.0,
+                      height: 100.0,
+                      decoration:BoxDecoration(
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 2.0
+                        ),
+                        shape: BoxShape.circle, 
                         color: Colors.blue,
-                        width: 2.0
                       ),
-                      shape: BoxShape.circle, 
-                      color: Colors.blue,
-                    ),
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                        imageUrl: _url,
-                        fit: BoxFit.fill,  
-                        progressIndicatorBuilder: (context, url, downloadProgress) => 
-                          CircularProgressIndicator(value: downloadProgress.progress
-                        ),
-                        placeholderFadeInDuration: Duration(
-                          seconds: 1,
-                        ),
-                        fadeInDuration: Duration(
-                          seconds: 1,
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: _url,
+                          fit: BoxFit.fill,  
+                          progressIndicatorBuilder: (context, url, downloadProgress) => 
+                            CircularProgressIndicator(value: downloadProgress.progress
+                          ),
+                          placeholderFadeInDuration: Duration(
+                            seconds: 1,
+                          ),
+                          fadeInDuration: Duration(
+                            seconds: 1,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  onTap: (){
-                    Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => ChangeProPic(_url)))
-                      .then((message){
-                        print(message);
-                        if(message!=null)
-                        {
-                          _helper.show(message);
-                          _helper.flushbar.show(context);
-                          _profileUrl();
-                        }                        
-                      });
-                  },
-                )
-              ],
-            ),
-
-            SizedBox(height: 16.0,),
-            //below image,name and email
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.fromLTRB(8.0,30.0,8.0,8.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0),
-                ),
-                color: Colors.white
+                    onTap: (){
+                      Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) => ChangeProPic(_url)))
+                        .then((message){
+                          print(message);
+                          if(message!=null)
+                          {
+                            _helper.show(message);
+                            _helper.flushbar.show(context);
+                            _profileUrl();
+                          }                        
+                        });
+                    },
+                  )
+                ],
               ),
-              child: Expanded(
+
+              SizedBox(height: 16.0,),
+              //below image,name and email
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.fromLTRB(8.0,30.0,8.0,8.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0),
+                  ),
+                  color: Colors.white
+                ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                  // mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -618,12 +619,12 @@ class _UserProfileState extends State<UserProfile> {
                     _createRowWithOptions(Icons.lock_open,"Change Password",Icons.chevron_right),
                     _createRowWithOptions(Icons.rate_review,"Rate us",Icons.chevron_right),
                     _createRowWithOptions(Icons.contact_mail,"Contact us",Icons.chevron_right),
-                    // _createRowWithOptions(Icons.table_chart,"Terms & Conditions",Icons.chevron_right),
+                    _createRowWithOptions(Icons.table_chart,"Terms & Conditions",Icons.chevron_right),
                   ],
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

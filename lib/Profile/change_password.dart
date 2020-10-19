@@ -145,7 +145,8 @@ class _ChangePasswordState extends State<ChangePassword> {
                       }
                       else
                       {
-                        Navigator.of(context).pop("Something went wrong. Relogin and try again");
+                        _helper.show("Something went wrong.Please try again");
+                        _helper.flushbar.show(context);
                       }
                     });
                   },
