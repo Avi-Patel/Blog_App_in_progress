@@ -120,8 +120,7 @@ class _StreambuilderState extends State<Streambuilder> {
         _tryagain();
       },
       child: StreamBuilder<QuerySnapshot>  (
-        stream: FirebaseFirestore.instance.collection(type).snapshots(),
-
+        stream: FirebaseFirestore.instance.collection(type).orderBy(FieldPath.documentId,descending: true).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
           if (snapshot.hasError) {
           return Text('Something went wrong');

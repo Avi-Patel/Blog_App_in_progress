@@ -121,14 +121,32 @@ class _ChangePasswordState extends State<ChangePassword> {
                         setState(() {
                           _isLoading=false;
                         });
-                        _helper.show("Please enter valid old password");
-                        _helper.flushbar.show(context);
+                        if(e.code=='weak-password')
+                        {
+                          _helper.show("The password provided is too weak.");
+                          _helper.flushbar.show(context);
+                        }
+                        else
+                        {
+                          _helper.show("Something went wrong.Please try again");
+                          _helper.flushbar.show(context);
+                        }
                       });
                     })
                     .catchError((e)
                     {
-                      print(e);
-                      Navigator.of(context).pop("Something went wrong. Relogin and try again");
+                      if(e.code=='wrong-password')
+                      {
+                        setState(() {
+                          _isLoading=false;
+                        });
+                        _helper.show("Please enter valid old password");
+                        _helper.flushbar.show(context);
+                      }
+                      else
+                      {
+                        Navigator.of(context).pop("Something went wrong. Relogin and try again");
+                      }
                     });
                   },
                 )

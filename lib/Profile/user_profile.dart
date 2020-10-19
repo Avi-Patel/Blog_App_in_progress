@@ -337,7 +337,7 @@ class _UserProfileState extends State<UserProfile> {
                 Text(
                   name,
                   style: TextStyle(
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                     color: Colors.white
                   ),
                 )
@@ -480,7 +480,6 @@ class _UserProfileState extends State<UserProfile> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Stack(
-              alignment: Alignment.topCenter,
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.fromLTRB(8.0,50.0,8.0,8.0),
@@ -590,17 +589,17 @@ class _UserProfileState extends State<UserProfile> {
 
             SizedBox(height: 16.0,),
             //below image,name and email
-            Expanded(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.fromLTRB(8.0,30.0,8.0,8.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.0),
-                    topRight: Radius.circular(20.0),
-                  ),
-                  color: Colors.white
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.fromLTRB(8.0,30.0,8.0,8.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
                 ),
+                color: Colors.white
+              ),
+              child: Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -617,6 +616,9 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                     _createRowWithOptions(Icons.email,"Change Email",Icons.chevron_right),
                     _createRowWithOptions(Icons.lock_open,"Change Password",Icons.chevron_right),
+                    _createRowWithOptions(Icons.rate_review,"Rate us",Icons.chevron_right),
+                    _createRowWithOptions(Icons.contact_mail,"Contact us",Icons.chevron_right),
+                    // _createRowWithOptions(Icons.table_chart,"Terms & Conditions",Icons.chevron_right),
                   ],
                 ),
               ),

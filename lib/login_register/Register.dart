@@ -63,17 +63,17 @@ class _RegisterState extends State<Register> with SingleTickerProviderStateMixin
       if(signUpError.code.toString() == "email-already-in-use")
       {
         print(signUpError.code.toString());
-        _helper.show("Email already in use!!");
+        _helper.show("The account already exists for that email.");
         _helper.flushbar.show(context);
       }
       else if(signUpError.code.toString() == "weak-password")
       {
-        _helper.show("Password is weak!!");
+        _helper.show("The password provided is too weak.!!");
         _helper.flushbar.show(context);
       }
       else if(signUpError.code.toString() == "invalid-email")
       {
-        _helper.show("email id invalid!!");
+        _helper.show("The email provided is invalid!!");
         _helper.flushbar.show(context);
       }
       else

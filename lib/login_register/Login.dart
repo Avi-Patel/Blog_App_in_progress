@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../helper_functions.dart';
 import 'VerifyEmail.dart';
-import '../main.dart';
 import 'Register.dart';
 
 class Login extends StatefulWidget 
@@ -51,11 +50,7 @@ class _LoginState extends State<Login>
       } 
       else 
       {
-        Navigator.of(context).pop();
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => HomePage(
-              msg:"Hey, Welcome buddy :)"
-            )));
+        Navigator.of(context).pop("Hey, Welcome buddy :)");
       }
     })
     .catchError((e){

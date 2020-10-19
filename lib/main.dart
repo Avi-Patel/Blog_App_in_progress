@@ -42,8 +42,6 @@ class _MyAppState extends State<MyApp> {
 }
 
 class HomePage extends StatefulWidget {
-  String msg=null;
-  HomePage({this.msg});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -51,10 +49,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
   Helper _helper=Helper();
+  String _name;
+  String _email;
+  String _uid;
   User _user;
-  String name = null;
-  String email = null;
-  String uid=null;
   String _url="https://png.pngitem.com/pimgs/s/506-5067022_sweet-shap-profile-placeholder-hd-png-download.png";
   Urls _urls=Urls();
   var blogArr = [
@@ -82,26 +80,44 @@ class _HomePageState extends State<HomePage> {
   void _singin() {
     Navigator.of(context).pop();
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => Login()));
+      .push(MaterialPageRoute(builder: (context) => Login()))
+      .then((value){
+        if(value!=null)
+        {
+          if(mounted)
+            setState(() {
+              _user=FirebaseAuth.instance.currentUser;
+            });
+            _getDetails().then((_){
+              _profileUrl();
+            });
+            _helper.show(value);
+            _helper.flushbar.show(context);
+        }
+      });
   }
 
   Future<void> _signOut() async {
     Navigator.of(context).pop();
-    await FirebaseAuth.instance.signOut().then((value) {}).catchError((e) {
+    await FirebaseAuth.instance
+      .signOut()
+      .then((value) {
+        print("User logged out");
+        _helper.show("You are logged out:)");
+        _helper.flushbar.show(context);
+        setState(() {
+          _user=null;
+        });
+        _getDetails().then((_){
+          _profileUrl();
+        });
+      })
+      .catchError((e){
       print(e);
     });
-    print("User logged out");
-    _helper.show("You are logged out:)");
-    _helper.flushbar.show(context);
-    _getname();
   }
 
-  Future<void> _getname() async {
-    _user = FirebaseAuth.instance.currentUser;
-    if (_user == null) {
-      print("user is null");
-    }
-
+  Future<void> _getDetails() async {
     if (_user != null && _user.emailVerified) {
       await FirebaseFirestore.instance
         .collection('users')
@@ -109,11 +125,12 @@ class _HomePageState extends State<HomePage> {
         .get()
         .then((value) {
           setState(() {
-            name = value.data()['name'];
-            email = _user.email;
+            _name = value.data()['name'];
+            _email = _user.email;
+            _uid=_user.uid;
           });
-          print(name);
-          print(email);
+          print(_name);
+          print(_email);
         })
         .catchError((e){
           print(e);
@@ -121,18 +138,20 @@ class _HomePageState extends State<HomePage> {
     } 
     else {
       setState(() {
-        name = null;
-        email = null;
-        uid=null;
+        _name = null;
+        _email = null;
+        _uid=null;
       });
     }
   }
 
   Future<void> _profileUrl() async
   {
-    await FirebaseFirestore.instance
+    if(_user!=null && _user.emailVerified)
+    {
+      await FirebaseFirestore.instance
       .collection('users')
-      .doc(uid)
+      .doc(_uid)
       .get()
       .then((value){
         // print(value.data().containsKey('profileUrl'));
@@ -144,34 +163,33 @@ class _HomePageState extends State<HomePage> {
         }
         print(_url);
       });
+    }
+    else
+    {
+      setState(() {
+        _url="https://png.pngitem.com/pimgs/s/506-5067022_sweet-shap-profile-placeholder-hd-png-download.png";
+      });
+    }
   }
    
   @override
   void initState() {
     super.initState();
-    if(widget.msg!=null)
-    {
-      _helper.show(widget.msg);
-      _helper.flushbar.show(context);
-    }
     _user=FirebaseAuth.instance.currentUser;
-    _getname();
-    // print(name);
-    // print(email);
-    // print(uid);
-    if(_user!=null)
+    if(_user.emailVerified==false)
     {
       setState(() {
-        uid=_user.uid;
+        _user=null;
       });
-      _profileUrl();
     }
+    _getDetails().then((_){
+      _profileUrl();
+    });
+    // print(_name);
+    // print(_email);
+    // print(_uid);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   Widget _drawer() {
     return Drawer(
@@ -179,16 +197,16 @@ class _HomePageState extends State<HomePage> {
         color: Colors.black,
         child: ListView(
           children: <Widget>[
-            name != null
+            _uid != null
                 ? UserAccountsDrawerHeader(
                     accountName: Text(
-                      name,
+                      _name,
                       style: TextStyle(
                         color: Colors.black,
                       ),
                     ),
                     accountEmail: Text(
-                      email,
+                      _email,
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -209,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                             fit: BoxFit.fill,
                           ),
                         ),
-                        child: _url!=null?
+                        child: _uid!=null?
                           ClipOval(
                             child: CachedNetworkImage(
                               imageUrl: _url,
@@ -228,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                           )
                           :
                           Text(
-                            name[0],
+                            _name[0],
                             style: TextStyle(fontSize: 40.0),
                           ),
                       ),
@@ -238,7 +256,7 @@ class _HomePageState extends State<HomePage> {
               color: Colors.black,
               child: Column(
                 children: <Widget>[
-                  name != null? 
+                  _uid != null? 
                   ListTile(
                     title: Text(
                       "My Profile",
@@ -253,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                         .push(MaterialPageRoute(builder: (context) => UserProfile()))
                         .then((_){
                           _profileUrl();
-                          _getname();
+                          _getDetails();
                         });
                     },
                   )
@@ -264,14 +282,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                   ListTile(
                     title: Text(
-                      name != null ? "Logout" : "Login",
+                      _uid != null ? "Logout" : "Login",
                       style: TextStyle(color: Colors.white),
                     ),
                     leading: Icon(
                       Icons.account_box,
                       color: Colors.white,
                     ),
-                    onTap: () => name == null ? _singin() : _signOut(),
+                    onTap: () => _uid == null ? _singin() : _signOut(),
                   ),
                   Divider(
                     color: Colors.blue,
