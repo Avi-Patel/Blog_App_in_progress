@@ -401,10 +401,12 @@ class _FullBlogState extends State<FullBlog> {
         ],
       ),
     );
+    
   }
 
   @override
   Widget build(BuildContext context) {
+    _helper.checkMemory();
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(

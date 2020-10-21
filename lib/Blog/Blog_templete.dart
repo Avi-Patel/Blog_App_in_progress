@@ -207,6 +207,15 @@ class _BlogTileState extends State<BlogTile> {
       i=i+1;
       if(i==10) break;
     }
+    s=s.replaceAll("<p>", "");
+    s=s.replaceAll("</p>", "");
+    s=s.replaceAll("<b>", "");
+    s=s.replaceAll("</b>", "");
+    s=s.replaceAll("<i>", "");
+    s=s.replaceAll("</i>", "");
+    s=s.replaceAll("<br>", "");
+    s=s.replaceAll("<u>", "");
+    s=s.replaceAll("</u>", "");
     return s;
   }
 

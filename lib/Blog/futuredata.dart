@@ -380,7 +380,7 @@ class _FutureDataState extends State<FutureData> {
 
   @override
   Widget build(BuildContext context) {
-
+    _helper.checkMemory();
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: FutureBuilder(

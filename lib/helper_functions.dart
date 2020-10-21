@@ -20,6 +20,15 @@ class Helper
       backgroundColor: Colors.white,
     );
   }
+  void checkMemory()
+  {
+    ImageCache _imageCache=PaintingBinding.instance.imageCache;
+    if(_imageCache.currentSizeBytes>= 50000000)
+    {
+      _imageCache.clear();
+      _imageCache.clearLiveImages();
+    }
+  }
   SpinKitFadingCircle spinkit = SpinKitFadingCircle(
     color: Colors.blue,
     size: 50.0,

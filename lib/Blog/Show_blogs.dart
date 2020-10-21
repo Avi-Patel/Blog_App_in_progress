@@ -120,12 +120,22 @@ class _StreambuilderState extends State<Streambuilder> {
         _tryagain();
       },
       child: StreamBuilder<QuerySnapshot>  (
-        stream: FirebaseFirestore.instance.collection(type).orderBy(FieldPath.documentId,descending: true).snapshots(),
+        stream: FirebaseFirestore.instance.collection(type)
+                .orderBy('likes',descending: true)
+                .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
           if (snapshot.hasError) {
-          return Text('Something went wrong');
-          }
-          if (!snapshot.hasData) {
+            return Center(
+              child:Text(
+                'Something went wrong',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                )
+              )
+            );
+          }          
+          if (snapshot.connectionState==ConnectionState.waiting) {
             return Center(
               child: Text(
                 "Loading...",
@@ -153,10 +163,12 @@ class _StreambuilderState extends State<Streambuilder> {
             child: ListView.builder(
               itemCount: snapshot.data.docs.length,
               itemBuilder: (BuildContext context,index){
-                // DocumentSnapshot doc=snapshot.data.docs[index];
                 FutureDataModel data=FutureDataModel.fromSnapshot(snapshot.data.docs[index]);
                 if(qry==null || snapshot.data.docs[index].data()['title'].toLowerCase().contains(qry.toLowerCase()))
-                return FutureData(data,type,"general",_index);
+                return AnimatedSwitcher(
+                  duration: Duration(seconds:1),
+                  child: FutureData(data,type,"general",_index)
+                );
                 else return SizedBox();
               },
             ),

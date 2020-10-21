@@ -318,7 +318,7 @@ class _UserProfileState extends State<UserProfile> {
   {
     return GestureDetector(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 16.0,vertical: 1.0),
+        margin: EdgeInsets.symmetric(horizontal: 4.0,vertical: 1.0),
         padding: EdgeInsets.symmetric(horizontal: 16.0,vertical: 16.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -470,6 +470,7 @@ class _UserProfileState extends State<UserProfile> {
 
   @override
   Widget build(BuildContext context) {
+    _helper.checkMemory();
     return Scaffold(
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,

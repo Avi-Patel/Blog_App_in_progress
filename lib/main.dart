@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _user=FirebaseAuth.instance.currentUser;
-    if(_user.emailVerified==false)
+    if(_user==null || _user.emailVerified==false)
     {
       setState(() {
         _user=null;
@@ -267,6 +267,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                     ),
                     onTap: () {
+                      Navigator.of(context).pop();
                       Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) => UserProfile()))
                         .then((_){
@@ -321,10 +322,11 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  var firstColor = Colors.black12, secondColor = Colors.black;
+  
 
   @override
   Widget build(BuildContext context) {
+    _helper.checkMemory();
     return Scaffold(
       appBar: AppBar(
         title: Text(
