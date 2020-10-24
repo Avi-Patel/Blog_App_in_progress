@@ -629,6 +629,7 @@ class _FullBlogState extends State<FullBlog> {
                 itemBuilder: (context,index){
                   return InkWell(
                     splashColor: Colors.white,
+                    highlightColor: Colors.white,
                     child: Container(
                       width: MediaQuery.of(context).size.width*3/4,
                       margin: EdgeInsets.all(4.0),

@@ -279,6 +279,7 @@ class _LoginState extends State<Login>
                   FlatButton(
                     color: Colors.blue,
                     splashColor: Colors.white,
+                    highlightColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       side: BorderSide(color: Colors.blue, width: 1),
                       borderRadius: BorderRadius.circular(10),

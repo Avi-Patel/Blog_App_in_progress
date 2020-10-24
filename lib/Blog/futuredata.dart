@@ -392,10 +392,11 @@ class _FutureDataState extends State<FutureData> {
             children: [
               new Material(
                 elevation: 10.0,
-                color: Colors.black,
+                color: Colors.white.withOpacity(0.0),
                 child: new InkWell(
                   borderRadius: new BorderRadius.all(Radius.circular(10.0)),
                   splashColor: Colors.white,
+                  highlightColor: Colors.white,
                   onTap: (){
                     Navigator.of(context)
                       .push(MaterialPageRoute(

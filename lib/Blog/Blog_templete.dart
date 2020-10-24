@@ -264,7 +264,6 @@ class _BlogTileState extends State<BlogTile> {
                 ),
 
                 SizedBox(height: 10.0,),    
-
                 TextFormField(
                   decoration: InputDecoration(
                     filled: true,
@@ -385,63 +384,48 @@ class _BlogTileState extends State<BlogTile> {
           ],
         ),
       ),
-      floatingActionButton: Container(
-        padding: EdgeInsets.fromLTRB(10.0,10.0,10.0,10.0),
-        margin: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 1,
-            ),
-          ],
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(10),
+      floatingActionButton: RaisedButton.icon(
+        color: Colors.green,
+        elevation: 10.0,
+        splashColor: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 8.0,horizontal: 16.0),
+        shape:RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
-        child: InkWell(
-          splashColor: Colors.white,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Upload",
-                style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
-              ),
-              SizedBox(width: 10.0,),
-              Icon(
-                Icons.upload_sharp,
-                color: Colors.white,
-              )
-            ],
-          ),
-          onTap: () async{
-            var result=await keyEditor.currentState.getText();
-            print(result);
-            String removed=_removeImgText(result);
-            print(removed);
-            if(result.toString().length==0)
-            {
-              _helper.show("description can not be empty");
-              _helper.flushbar.show(context);
-            }
-            else if(_isLoading==false && _fbKey1.currentState.validate())
-            {
-              _blog.setDescription(result.toString());
-              _blog.setMinsRead(removed);
-              print(_blog.getDescription());
-              setState(() {
-                _isLoading=true;
-              });
-              var answer=await _addData();
-              if(answer==true)
-              {
-                await _upload();
-                Navigator.of(context).pop("It may take a while to reflact on home page");  
-              }              
-            }
+        icon: Icon(
+          Icons.upload_sharp,
+          color: Colors.white
+        ),
+        label: Text(
+          "Upload",
+          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+        ),
+        onPressed:() async{
+          var result=await keyEditor.currentState.getText();
+          print(result);
+          String removed=_removeImgText(result);
+          print(removed);
+          if(result.toString().length==0)
+          {
+            _helper.show("description can not be empty");
+            _helper.flushbar.show(context);
           }
-        ),
+          else if(_isLoading==false && _fbKey1.currentState.validate())
+          {
+            _blog.setDescription(result.toString());
+            _blog.setMinsRead(removed);
+            print(_blog.getDescription());
+            setState(() {
+              _isLoading=true;
+            });
+            var answer=await _addData();
+            if(answer==true)
+            {
+              await _upload();
+              Navigator.of(context).pop("It may take a while to reflact on home page");  
+            }              
+          }
+        }
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
       body:_isLoading==true?

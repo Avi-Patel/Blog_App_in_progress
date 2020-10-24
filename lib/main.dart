@@ -4,6 +4,7 @@ import 'package:blogging_app/Blog/Show_blogs.dart';
 import 'package:blogging_app/Profile/user_profile.dart';
 import 'package:blogging_app/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,6 +15,7 @@ import 'image_urls.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  GestureBinding.instance.resamplingEnabled=true;
   runApp(MyApp());
 }
 
@@ -34,7 +36,7 @@ class _MyAppState extends State<MyApp> {
           color: Colors.black,
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: "Roboto Slab"
+        fontFamily: "Arimo"
       ),
       home: HomePage(),
     );
@@ -197,124 +199,117 @@ class _HomePageState extends State<HomePage> {
         color: Colors.black,
         child: ListView(
           children: <Widget>[
-            _uid != null
-                ? UserAccountsDrawerHeader(
-                    accountName: Text(
-                      _name,
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    accountEmail: Text(
-                      _email,
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    currentAccountPicture:
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 2.0
-                          ),
-                          color: Colors.black,
-                          image: DecorationImage(
-                            image:CachedNetworkImageProvider(
-                              _url,
-                            ),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: _uid!=null?
-                          ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: _url,
-                              fit: BoxFit.fill,  
-                              progressIndicatorBuilder: (context, url, downloadProgress) => 
-                                CircularProgressIndicator(
-                                  value: downloadProgress.progress,
-                              ),
-                              placeholderFadeInDuration: Duration(
-                                seconds: 1,
-                              ),
-                              fadeInDuration: Duration(
-                                seconds: 1,
-                              ),
-                            ),
-                          )
-                          :
-                          Text(
-                            _name[0],
-                            style: TextStyle(fontSize: 40.0),
-                          ),
-                      ),
-                  )
-                : Container(),
-            Container(
-              color: Colors.black,
-              child: Column(
-                children: <Widget>[
-                  _uid != null? 
-                  ListTile(
-                    title: Text(
-                      "My Profile",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    leading: Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) => UserProfile()))
-                        .then((_){
-                          _profileUrl();
-                          _getDetails();
-                        });
-                    },
-                  )
-                  : Container(),
-                  Divider(
-                    color: Colors.blue,
-                    height: 0.0,
-                  ),
-                  ListTile(
-                    title: Text(
-                      _uid != null ? "Logout" : "Login",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    leading: Icon(
-                      Icons.account_box,
-                      color: Colors.white,
-                    ),
-                    onTap: () => _uid == null ? _singin() : _signOut(),
-                  ),
-                  Divider(
-                    color: Colors.blue,
-                    height: 0.0,
-                  ),
-                  ListTile(
-                    title: Text(
-                      "Close",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    leading: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                    ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Divider(
-                    color: Colors.blue,
-                    height: 0.0,
-                  ),
-                ],
+            _uid != null? 
+            UserAccountsDrawerHeader(
+              accountName: Text(
+                _name,
+                style: TextStyle(
+                  color: Colors.black,
+                ),
               ),
+              accountEmail: Text(
+                _email,
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+              currentAccountPicture:
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 2.0
+                  ),
+                  color: Colors.black,
+                  image: DecorationImage(
+                    image:CachedNetworkImageProvider(
+                      _url,
+                    ),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: _uid!=null?
+                ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: _url,
+                    fit: BoxFit.fill,  
+                    progressIndicatorBuilder: (context, url, downloadProgress) => 
+                      CircularProgressIndicator(
+                        value: downloadProgress.progress,
+                    ),
+                    placeholderFadeInDuration: Duration(
+                      seconds: 1,
+                    ),
+                    fadeInDuration: Duration(
+                      seconds: 1,
+                    ),
+                  ),
+                )
+                :
+                Text(
+                  _name[0],
+                  style: TextStyle(fontSize: 40.0),
+                ),
+              ),
+            )
+            : Container(),
+            _uid != null? 
+            ListTile(
+              title: Text(
+                "My Profile",
+                style: TextStyle(color: Colors.white),
+              ),
+              leading: Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => UserProfile()))
+                  .then((_){
+                    _profileUrl();
+                    _getDetails();
+                  });
+              },
+            )
+            : Container(),
+            Divider(
+              color: Colors.blue,
+              height: 0.0,
+            ),
+            ListTile(
+              title: Text(
+                _uid != null ? "Logout" : "Login",
+                style: TextStyle(color: Colors.white),
+              ),
+              leading: Icon(
+                Icons.account_box,
+                color: Colors.white,
+              ),
+              onTap: () => _uid == null ? _singin() : _signOut(),
+            ),
+            Divider(
+              color: Colors.blue,
+              height: 0.0,
+            ),
+            ListTile(
+              title: Text(
+                "Close",
+                style: TextStyle(color: Colors.white),
+              ),
+              leading: Icon(
+                Icons.close,
+                color: Colors.white,
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            Divider(
+              color: Colors.blue,
+              height: 0.0,
             ),
           ],
         ),
@@ -342,6 +337,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 2.0,
         materialTapTargetSize: MaterialTapTargetSize.padded,
         splashColor: Colors.white,
+        highlightElevation: 10.0,
         child: Icon(
           Icons.create,
           color: Colors.white,
@@ -369,14 +365,12 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      body: Container(
-        // height: MediaQuery.of(context).size.height,
-        // width: MediaQuery.of(context).size.width,
-        // color: Colors.black,
-        child: GridView.count(
-          crossAxisCount: 2,
-          children: List.generate(8, (index) {
-            return InkWell(
+      body: GridView.count(
+        crossAxisCount: 2,
+        children: List.generate(8, (index) {
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
               splashColor: Colors.white,
               highlightColor: Colors.white,
               child: Card(
@@ -384,6 +378,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.black,
                 child: Container(
                   decoration: BoxDecoration(
+                    color: Colors.black,
                     borderRadius: BorderRadius.circular(10.0),
                     border: Border.all(color: Colors.white),
                     image: DecorationImage(
@@ -436,9 +431,9 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => ShowBlogs("${blogArr[index]}"+" "+"${blogExtention[index]}",index)));
               }
-            );
-          }),
-        ),
+            ),
+          );
+        }),
       ),
     );
   }

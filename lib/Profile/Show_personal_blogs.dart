@@ -83,7 +83,7 @@ class Datasearch extends SearchDelegate<String>{
 
   @override
   Widget buildResults(BuildContext context) {
-    return null;
+    return Streambuilder(query,type,_index);;
   }
 
   @override
@@ -125,13 +125,15 @@ class _StreambuilderState extends State<Streambuilder> {
         stream: FirebaseFirestore.instance.collection(type).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
           if (snapshot.hasError) {
-          return Text('Something went wrong');
+          return Center(child: Text('Something went wrong'));
           }
           if (!snapshot.hasData) {
-            return Text(
-              "Loading...",
-              style: TextStyle(
-                color: Colors.white
+            return Center(
+              child: Text(
+                "Loading...",
+                style: TextStyle(
+                  color: Colors.white
+                ),
               ),
             );
           }

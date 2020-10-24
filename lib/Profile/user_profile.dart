@@ -6,7 +6,6 @@ import 'package:blogging_app/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class UserProfile extends StatefulWidget {
@@ -152,50 +151,50 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget _yourBlogs()
   {
-    return InkWell(
-      splashColor: Colors.black,
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-        width: MediaQuery.of(context).size.width/4,
-        decoration: BoxDecoration(
-          color: Colors.black,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Your",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                fontStyle: FontStyle.normal
-              ),
-            ),
-            Text(
-              "Blogs",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                fontStyle: FontStyle.normal
-              ),
-            ),
-            SizedBox(height: 8.0,),
-            Text(
-              _yourblogs.toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                fontStyle: FontStyle.normal
-              ),
-            )
-          ],
-        ),
+    return RaisedButton(        
+      elevation: 10.0,
+      splashColor: Colors.white,
+      highlightColor: Colors.white,
+      padding: EdgeInsets.all(8.0),
+      highlightElevation: 0.0,
+      color: Colors.black,
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      onTap: (){
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Your",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              fontStyle: FontStyle.normal
+            ),
+          ),
+          Text(
+            "Blogs",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              fontStyle: FontStyle.normal
+            ),
+          ),
+          SizedBox(height: 8.0,),
+          Text(
+            _yourblogs.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              fontStyle: FontStyle.normal
+            ),
+          )
+        ],
+      ),
+      onPressed: (){
         Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => PersonalBlogs()))
           .then((_){
@@ -209,51 +208,50 @@ class _UserProfileState extends State<UserProfile> {
 
   Widget _savedBlogs()
   {
-    return InkWell(
-      splashColor: Colors.black,
+    return RaisedButton(
+      elevation: 10.0,
+      splashColor: Colors.white,
       highlightColor: Colors.white,
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-          width: MediaQuery.of(context).size.width/4,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Saved",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                fontStyle: FontStyle.normal
-              ),
-            ),
-            Text(
-              "Blogs",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                fontStyle: FontStyle.normal
-              ),
-            ),
-            SizedBox(height: 8.0,),
-            Text(
-              _savedblogs.toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                fontStyle: FontStyle.normal
-              ),
-            )
-          ],
-        ),
+      padding: EdgeInsets.all(8.0),
+      highlightElevation: 0.0,
+      color: Colors.black,
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      onTap: (){
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Saved",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              fontStyle: FontStyle.normal
+            ),
+          ),
+          Text(
+            "Blogs",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              fontStyle: FontStyle.normal
+            ),
+          ),
+          SizedBox(height: 8.0,),
+          Text(
+            _savedblogs.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              fontStyle: FontStyle.normal
+            ),
+          )
+        ],
+      ),
+      onPressed:(){
         Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => SavedBlogs()))
           .then((_){
@@ -266,51 +264,50 @@ class _UserProfileState extends State<UserProfile> {
   
   Widget _totalLikes()
   {
-    return InkWell(
-      splashColor: Colors.black,
+    return RaisedButton(
+      elevation: 10.0,
+      splashColor: Colors.white,
       highlightColor: Colors.white,
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-          width: MediaQuery.of(context).size.width/4,
-          decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Total",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                fontStyle: FontStyle.normal
-              ),
-            ),
-            Text(
-              "Likes",
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                fontStyle: FontStyle.normal
-              ),
-            ),
-            SizedBox(height: 8.0,),
-            Text(
-              _totallikes.toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16.0,
-                fontStyle: FontStyle.normal
-              ),
-            )
-          ],
-        ),
+      padding: EdgeInsets.all(8.0),
+      highlightElevation: 0.0,
+      color: Colors.black,
+      shape:RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      onTap: (){},
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Total",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              fontStyle: FontStyle.normal
+            ),
+          ),
+          Text(
+            "Likes",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              fontStyle: FontStyle.normal
+            ),
+          ),
+          SizedBox(height: 8.0,),
+          Text(
+            _totallikes.toString(),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 16.0,
+              fontStyle: FontStyle.normal
+            ),
+          )
+        ],
+      ),
+      onPressed: (){},
     );
   }
 
@@ -522,6 +519,7 @@ class _UserProfileState extends State<UserProfile> {
                           FlatButton(
                             color: Colors.blue,
                             splashColor: Colors.white,
+                            highlightColor: Colors.white,
                             padding: EdgeInsets.fromLTRB(4.0,4.0,4.0,4.0),
                             shape: RoundedRectangleBorder(
                               // side: BorderSide(color: Colors.black, width: 1),
@@ -546,6 +544,7 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                   InkWell(
                     splashColor: Colors.white,
+                    highlightColor: Colors.white,
                     child:Container(
                       width: 100.0,
                       height: 100.0,

@@ -85,7 +85,7 @@ class Datasearch extends SearchDelegate<String>{
 
   @override
   Widget buildResults(BuildContext context) {
-    return null;
+    return Streambuilder(query,type,_index);
   }
 
   @override

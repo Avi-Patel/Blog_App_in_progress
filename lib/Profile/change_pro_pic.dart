@@ -127,6 +127,7 @@ class _ChangeProPicState extends State<ChangeProPic> {
               FlatButton(
                 color: Colors.blue,
                 splashColor: Colors.white,
+                highlightColor: Colors.white,
                 padding: EdgeInsets.fromLTRB(10.0,10.0,10.0,10.0),
                 shape: RoundedRectangleBorder(
                   // side: BorderSide(color: Colors.black, width: 1),

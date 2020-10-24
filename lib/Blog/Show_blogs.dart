@@ -53,6 +53,14 @@ class Datasearch extends SearchDelegate<String>{
   Datasearch(this.type,this._index);
 
   @override
+  ThemeData appBarTheme(BuildContext context) {
+    return ThemeData(
+      backgroundColor: Colors.black,
+      iconTheme: IconThemeData(color: Colors.white),
+      primaryColor: Colors.white,
+    );
+  }
+  @override
   List<Widget> buildActions(BuildContext context) {
     return [
       new IconButton
@@ -61,7 +69,9 @@ class Datasearch extends SearchDelegate<String>{
         (
           Icons.clear
         ), 
-        onPressed: (){ query="";}
+        onPressed: (){ 
+          query="";
+        }
       )
     ];
   }
@@ -82,7 +92,7 @@ class Datasearch extends SearchDelegate<String>{
 
   @override
   Widget buildResults(BuildContext context) {
-    return null;
+    return Streambuilder(query,type,_index);
   }
 
   @override
@@ -135,7 +145,7 @@ class _StreambuilderState extends State<Streambuilder> {
               )
             );
           }          
-          if (snapshot.connectionState==ConnectionState.waiting) {
+          if (!snapshot.hasData) {
             return Center(
               child: Text(
                 "Loading...",
@@ -165,10 +175,10 @@ class _StreambuilderState extends State<Streambuilder> {
               itemBuilder: (BuildContext context,index){
                 FutureDataModel data=FutureDataModel.fromSnapshot(snapshot.data.docs[index]);
                 if(qry==null || snapshot.data.docs[index].data()['title'].toLowerCase().contains(qry.toLowerCase()))
-                return AnimatedSwitcher(
-                  duration: Duration(seconds:1),
-                  child: FutureData(data,type,"general",_index)
-                );
+                  return AnimatedSwitcher(
+                    duration: Duration(seconds:1),
+                    child: FutureData(data,type,"general",_index)
+                  );
                 else return SizedBox();
               },
             ),
