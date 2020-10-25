@@ -97,8 +97,8 @@ class Datasearch extends SearchDelegate<String>{
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    
-    return Streambuilder(query,type,_index);
+    var qry=query;
+    return Streambuilder(qry,type,_index);
   }
 
 }

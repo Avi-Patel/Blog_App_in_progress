@@ -29,14 +29,14 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Blogging App',
+      title: 'Bloggenix',
       themeMode: ThemeMode.dark,
       darkTheme: ThemeData(
         appBarTheme: AppBarTheme(
           color: Colors.black,
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: "Arimo"
+        fontFamily: "Lato"
       ),
       home: HomePage(),
     );
