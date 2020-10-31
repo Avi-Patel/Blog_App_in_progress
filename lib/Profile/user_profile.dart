@@ -22,6 +22,7 @@ class _UserProfileState extends State<UserProfile> {
   var _savedblogs=0;
   var _totallikes=0;
   var _name="...";
+  var isLoading=false;
 
   Future<void> _profileUrl() async
   {
@@ -118,6 +119,9 @@ class _UserProfileState extends State<UserProfile> {
   }
   Future<void> _updateName() async
   {
+    setState(() {
+      isLoading=true;
+    });
     await FirebaseFirestore.instance
       .collection('users')
       .doc(uid)
@@ -125,10 +129,16 @@ class _UserProfileState extends State<UserProfile> {
         'name':_name,
       })
       .catchError((e){
+        setState(() {
+          isLoading=false;
+        });
         print("error : "+e.toString());
         _helper.show("Opps!! something went wrong");
         _helper.flushbar.show(context);
       });
+    setState(() {
+      isLoading=false;
+    });
   }
    
   @override
@@ -369,7 +379,6 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _showDialogName()
   {
     var value;
-    var isLoading=false;
     return showDialog(
       context: context,
       builder: (context){
@@ -451,11 +460,10 @@ class _UserProfileState extends State<UserProfile> {
               onTap: (){
                 setState(() {
                   _name=value;
-                  isLoading=true;
+                  // isLoading=true;
                 });
-                _updateName().whenComplete((){
-                  Navigator.of(context).pop();
-                });
+                _updateName();
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -471,7 +479,10 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
+      body: isLoading==true?
+      _helper.spinkit
+      :
+      SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.only(top:30.0),
           child: Column(

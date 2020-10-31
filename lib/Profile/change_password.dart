@@ -13,6 +13,61 @@ class _ChangePasswordState extends State<ChangePassword> {
   var oldP,newP;
   Helper _helper=Helper();
 
+  void _updatePassword()
+  {
+    if(newP.toString().length<8)
+    {
+      _helper.show("The new password must be of length 8.");
+      _helper.flushbar.show(context);
+    }
+    setState(() {
+      _isLoading=true;
+    });
+    AuthCredential authCredential = EmailAuthProvider.credential(
+      email: FirebaseAuth.instance.currentUser.email,
+      password: oldP,
+    );
+    FirebaseAuth.instance.currentUser.reauthenticateWithCredential(authCredential)
+    .then((_){
+      FirebaseAuth.instance.currentUser.updatePassword(newP).then((_){
+        Navigator.of(context).pop("Your password has been updated");
+      })
+      .catchError((e)
+      {
+        print(e);
+        setState(() {
+          _isLoading=false;
+        });
+        if(e.code=='weak-password')
+        {
+          _helper.show("The password provided is too weak.");
+          _helper.flushbar.show(context);
+        }
+        else
+        {
+          _helper.show("Something went wrong.Please try again");
+          _helper.flushbar.show(context);
+        }
+      });
+    })
+    .catchError((e)
+    {
+      if(e.code=='wrong-password')
+      {
+        setState(() {
+          _isLoading=false;
+        });
+        _helper.show("Please enter valid old password");
+        _helper.flushbar.show(context);
+      }
+      else
+      {
+        _helper.show("Something went wrong.Please try again");
+        _helper.flushbar.show(context);
+      }
+    });
+  }
+
   Widget _body()
   {
     return Padding(
@@ -103,52 +158,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                   ),
                   onTap: (){
-                    setState(() {
-                      _isLoading=true;
-                    });
-                    AuthCredential authCredential = EmailAuthProvider.credential(
-                      email: FirebaseAuth.instance.currentUser.email,
-                      password: oldP,
-                    );
-                    FirebaseAuth.instance.currentUser.reauthenticateWithCredential(authCredential)
-                    .then((_){
-                      FirebaseAuth.instance.currentUser.updatePassword(newP).then((_){
-                        Navigator.of(context).pop("Your password has been updated");
-                      })
-                      .catchError((e)
-                      {
-                        print(e);
-                        setState(() {
-                          _isLoading=false;
-                        });
-                        if(e.code=='weak-password')
-                        {
-                          _helper.show("The password provided is too weak.");
-                          _helper.flushbar.show(context);
-                        }
-                        else
-                        {
-                          _helper.show("Something went wrong.Please try again");
-                          _helper.flushbar.show(context);
-                        }
-                      });
-                    })
-                    .catchError((e)
-                    {
-                      if(e.code=='wrong-password')
-                      {
-                        setState(() {
-                          _isLoading=false;
-                        });
-                        _helper.show("Please enter valid old password");
-                        _helper.flushbar.show(context);
-                      }
-                      else
-                      {
-                        _helper.show("Something went wrong.Please try again");
-                        _helper.flushbar.show(context);
-                      }
-                    });
+                    _updatePassword();
                   },
                 )
               ],

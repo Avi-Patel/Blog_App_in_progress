@@ -29,7 +29,7 @@ class Helper
       _imageCache.clearLiveImages();
     }
   }
-  SpinKitFadingCircle spinkit = SpinKitFadingCircle(
+  SpinKitFadingFour spinkit = SpinKitFadingFour(
     color: Colors.blue,
     size: 50.0,
     duration: Duration(milliseconds: 2000),

@@ -423,6 +423,12 @@ class _BlogTileState extends State<BlogTile> {
             {
               await _upload();
               Navigator.of(context).pop("It may take a while to reflact on home page");  
+            }
+            else
+            {
+              setState(() {
+                _isLoading=false;
+              });
             }              
           }
         }
