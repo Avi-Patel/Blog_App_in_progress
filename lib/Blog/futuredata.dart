@@ -1,5 +1,6 @@
 import 'package:blogging_app/Blog/full_blog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -33,7 +34,7 @@ class _FutureDataState extends State<FutureData> {
   bool liked=false;
   String type;
   var uid;
-  bool  saved=false;
+  bool  saved=false,_isLoading=false;
   
   Future<void> _checklike() async
   {
@@ -217,18 +218,15 @@ class _FutureDataState extends State<FutureData> {
 
   Future<void> _deletePersonalBlog() async
   {
-    var doc=await FirebaseFirestore.instance
-      .collection(_type)
-      .doc(_data.id)
-      .get();
-    var likes=doc.data()['likes'];
-    await FirebaseFirestore.instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        'Total Likes': FieldValue.increment(-likes),
-        'Your Blogs' : FieldValue.increment(-1),
-      });
+    setState(() {
+      _isLoading=true;
+    });
+    // var doc=await FirebaseFirestore.instance
+    //   .collection(_type)
+    //   .doc(_data.id)
+    //   .get();
+    // var likes=doc.data()['likes'];
+    var likes=_data.likes;
     await FirebaseFirestore.instance
       .collection('users')
       .get()
@@ -251,6 +249,9 @@ class _FutureDataState extends State<FutureData> {
                     print("error : " +e.toString());
                     _helper.show("Opps!! Something went wrong");
                     _helper.flushbar.show(context);
+                    setState(() {
+                      _isLoading=false;
+                    });
                   });
               }
             });
@@ -261,12 +262,45 @@ class _FutureDataState extends State<FutureData> {
         print("error : " +e.toString());
         _helper.show("Opps!! Something went wrong");
         _helper.flushbar.show(context);
+        setState(() {
+          _isLoading=false;
+        });
       });
-    
+    for(int i=0;i<_data.photosUrl.length;i++)
+    {
+      FirebaseStorage.instance
+        .getReferenceFromUrl(_data.photosUrl[i])
+        .then((res) {
+          res.delete().then((res) {
+            print("Deleted!");
+            Navigator.of(context).pop("Photo deleted:).It will reflact in a moment.");
+          })
+          .catchError((e){
+            print(e);
+            _helper.show("Opps!! Some error occured. Try again");
+            _helper.flushbar..show(context);
+          });
+        })
+        .catchError((e){
+          print(e);
+          _helper.show("Opps!! Some error occured. Try again");
+          _helper.flushbar..show(context);
+        });
+    }
+    await FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .update({
+        'Total Likes': FieldValue.increment(-likes),
+        'Your Blogs' : FieldValue.increment(-1),
+      });
     await FirebaseFirestore.instance
       .collection(_type)
       .doc(_data.id)
       .delete();
+    setState(() {
+      _isLoading=false;
+    });
   }
 
   Future<void> _deleteSavedBlog() async
@@ -338,10 +372,7 @@ class _FutureDataState extends State<FutureData> {
               ),
             ),
             onTap: () async{
-              if(_indicator=="personal")
-                await _deletePersonalBlog();
-              else
-              await  _deleteSavedBlog();
+              _deletePersonalBlog();
               Navigator.of(context).pop();
             },
           ),
@@ -381,7 +412,10 @@ class _FutureDataState extends State<FutureData> {
   @override
   Widget build(BuildContext context) {
     _helper.checkMemory();
-    return Padding(
+    return _isLoading==true?
+    _helper.spinkit
+    :
+    Padding(
       padding: const EdgeInsets.all(4.0),
       child: FutureBuilder(
         future: _load(),

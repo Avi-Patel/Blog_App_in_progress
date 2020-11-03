@@ -222,35 +222,26 @@ class _HomePageState extends State<HomePage> {
                     width: 2.0
                   ),
                   color: Colors.black,
-                  image: DecorationImage(
-                    image:CachedNetworkImageProvider(
-                      _url,
-                    ),
-                    fit: BoxFit.fill,
-                  ),
                 ),
-                child: _uid!=null?
-                ClipOval(
-                  child: CachedNetworkImage(
-                    imageUrl: _url,
-                    fit: BoxFit.fill,  
-                    progressIndicatorBuilder: (context, url, downloadProgress) => 
-                      CircularProgressIndicator(
-                        value: downloadProgress.progress,
-                    ),
-                    placeholderFadeInDuration: Duration(
-                      seconds: 1,
-                    ),
-                    fadeInDuration: Duration(
-                      seconds: 1,
+                child:ClipOval(
+                  child: Hero(
+                    tag: "profilepic",
+                    child:CachedNetworkImage(
+                      imageUrl: _url,
+                      fit: BoxFit.fill,  
+                      progressIndicatorBuilder: (context, url, downloadProgress) => 
+                        CircularProgressIndicator(
+                          value: downloadProgress.progress,
+                      ),
+                      placeholderFadeInDuration: Duration(
+                        seconds: 1,
+                      ),
+                      fadeInDuration: Duration(
+                        seconds: 1,
+                      ),
                     ),
                   ),
                 )
-                :
-                Text(
-                  _name[0],
-                  style: TextStyle(fontSize: 40.0),
-                ),
               ),
             )
             : Container(),

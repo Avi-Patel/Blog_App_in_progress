@@ -18,6 +18,7 @@ class _UserProfileState extends State<UserProfile> {
   Helper _helper=Helper();
   var uid;
   String _url="https://png.pngitem.com/pimgs/s/506-5067022_sweet-shap-profile-placeholder-hd-png-download.png";
+  String _defaultUrl="https://png.pngitem.com/pimgs/s/506-5067022_sweet-shap-profile-placeholder-hd-png-download.png";
   var _yourblogs=0;
   var _savedblogs=0;
   var _totallikes=0;
@@ -36,6 +37,12 @@ class _UserProfileState extends State<UserProfile> {
         {
           setState(() {
             _url=value.data()['profileUrl'].toString();
+          });
+        }
+        else
+        {
+          setState(() {
+            _url=_defaultUrl;
           });
         }
         print(_url);
@@ -568,17 +575,20 @@ class _UserProfileState extends State<UserProfile> {
                         color: Colors.blue,
                       ),
                       child: ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: _url,
-                          fit: BoxFit.fill,  
-                          progressIndicatorBuilder: (context, url, downloadProgress) => 
-                            CircularProgressIndicator(value: downloadProgress.progress
-                          ),
-                          placeholderFadeInDuration: Duration(
-                            seconds: 1,
-                          ),
-                          fadeInDuration: Duration(
-                            seconds: 1,
+                        child: Hero(
+                          tag: "profilepic",
+                          child:CachedNetworkImage(
+                            imageUrl: _url,
+                            fit: BoxFit.fill,  
+                            progressIndicatorBuilder: (context, url, downloadProgress) => 
+                              CircularProgressIndicator(value: downloadProgress.progress
+                            ),
+                            placeholderFadeInDuration: Duration(
+                              seconds: 1,
+                            ),
+                            fadeInDuration: Duration(
+                              seconds: 1,
+                            ),
                           ),
                         ),
                       ),

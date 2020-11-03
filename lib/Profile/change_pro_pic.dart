@@ -22,16 +22,34 @@ class _ChangeProPicState extends State<ChangeProPic> {
   Helper _helper=Helper();
   String uid=FirebaseAuth.instance.currentUser.uid;
   bool loading=false;
+  String _defaultUrl="https://png.pngitem.com/pimgs/s/506-5067022_sweet-shap-profile-placeholder-hd-png-download.png";
   
 
   Future<void> _uploadProPic() async
   {
     // ignore: invalid_use_of_visible_for_testing_member
     await ImagePicker.platform.pickImage(source: ImageSource.gallery)
-    .then((_image) async{
-      // setState(() {
-      //   _blog.addPhotos(io.File(_image.path));
-      // });  
+    .then((_image) async{ 
+      if(_url!=_defaultUrl)
+      {
+        FirebaseStorage.instance
+          .getReferenceFromUrl(_url)
+          .then((res) {
+            res.delete().then((res) {
+              print("Deleted!");
+            })
+            .catchError((e){
+              print(e);
+              _helper.show("Opps!! Some error occured. Try again");
+              _helper.flushbar..show(context);
+            });
+          })
+          .catchError((e){
+            print(e);
+            _helper.show("Opps!! Some error occured. Try again");
+            _helper.flushbar..show(context);
+          });
+      }
       StorageReference _storageRef= FirebaseStorage
         .instance
         .ref()
@@ -73,6 +91,40 @@ class _ChangeProPicState extends State<ChangeProPic> {
     });    
   }
 
+  Future<void> _deleteProPic() async
+  {
+    await FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .update({
+        'profileUrl': FieldValue.delete()
+      })
+      .catchError((e){
+        print(e);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
+      });
+
+    FirebaseStorage.instance
+      .getReferenceFromUrl(_url)
+      .then((res) {
+        res.delete().then((res) {
+          print("Deleted!");
+          Navigator.of(context).pop("Photo deleted:).It will reflact in a moment.");
+        })
+        .catchError((e){
+          print(e);
+          _helper.show("Opps!! Some error occured. Try again");
+          _helper.flushbar..show(context);
+        });
+      })
+      .catchError((e){
+        print(e);
+        _helper.show("Opps!! Some error occured. Try again");
+        _helper.flushbar..show(context);
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,16 +149,6 @@ class _ChangeProPicState extends State<ChangeProPic> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                // height: MediaQuery.of(context).size.height-200,
-                // width: MediaQuery.of(context).size.width,
-                // decoration: BoxDecoration(
-                //   image: DecorationImage(
-                //     image: NetworkImage(
-                //       _url,
-                //     ),
-                //     fit: BoxFit.fill,
-                //   )
-                // ),
                 alignment: Alignment.center,
                 child: CachedNetworkImage(
                   imageUrl: _url,
@@ -124,43 +166,83 @@ class _ChangeProPicState extends State<ChangeProPic> {
 
               SizedBox(height: 20.0,),
 
-              FlatButton(
-                color: Colors.blue,
-                splashColor: Colors.white,
-                highlightColor: Colors.white,
-                padding: EdgeInsets.fromLTRB(10.0,10.0,10.0,10.0),
-                shape: RoundedRectangleBorder(
-                  // side: BorderSide(color: Colors.black, width: 1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      "Change Photo",
-                      style:
-                          TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RaisedButton(
+                    elevation: 10.0,
+                    color: Colors.blue,
+                    splashColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    SizedBox(
-                      width: 10.0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Change Photo",
+                          style:
+                              TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Icon(
+                          Icons.add_a_photo_sharp,
+                          color: Colors.white,
+                        )
+                      ],
                     ),
-                    Icon(
-                      Icons.add_a_photo_sharp,
-                      color: Colors.white,
-                    )
-                  ],
-                ),
-                onPressed: () async{
-                  setState(() {
-                    loading=true;
-                  });
-                  _uploadProPic().whenComplete((){
-                    setState(() {
-                      loading=false;
-                    });
-                  });
-                },
-              ),
+                    onPressed: () async{
+                      setState(() {
+                        loading=true;
+                      });
+                      _uploadProPic().whenComplete((){
+                        setState(() {
+                          loading=false;
+                        });
+                      });
+                    },
+                  ),
+                  if(_url!=_defaultUrl)
+                  RaisedButton(
+                    elevation: 10.0,
+                    color: Colors.blue,
+                    splashColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Remove Photo",
+                          style:
+                              TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          width: 10.0,
+                        ),
+                        Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                    onPressed: () async{
+                      setState(() {
+                        loading=true;
+                      });
+                      _deleteProPic().whenComplete((){
+                        setState(() {
+                          loading=false;
+                        });
+                      });
+                    },
+                  ),
+                  
+                ],
+              )
             ],
           ),
         ),
