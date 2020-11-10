@@ -491,8 +491,7 @@ class _UserProfileState extends State<UserProfile> {
       :
       Container(
         margin: EdgeInsets.only(top:70.0),
-        child: 
-        Stack(
+        child: Stack(
           alignment: Alignment.topCenter,
           children: <Widget>[
             Padding(
