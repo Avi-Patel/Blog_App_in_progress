@@ -45,7 +45,7 @@ class _BlogTileState extends State<BlogTile> {
       'userId': _user.uid.toString(),
       'title': _blog.getTitle(),
       'description': _blog.getDescription(),
-      'minsRead': _blog.getMinsRead().length~/100+1,
+      'minsRead': _blog.getMinsRead().length~/500+1,
       'photosUrl': [],
       '#ratings':0,
       'star': 0.0,
@@ -436,8 +436,7 @@ class _BlogTileState extends State<BlogTile> {
           }
         }
       )
-      :
-      Container(),
+      :Container(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
       body:_isLoading==true?
       Center(child: _helper.spinkit,)
