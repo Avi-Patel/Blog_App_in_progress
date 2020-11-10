@@ -489,164 +489,202 @@ class _UserProfileState extends State<UserProfile> {
       body: isLoading==true?
       _helper.spinkit
       :
-      SingleChildScrollView(
-        child: Container(
-          margin: EdgeInsets.only(top:30.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Stack(
-                alignment: Alignment.topCenter,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(8.0,50.0,8.0,8.0),
-                    child: Container(
-                      height: 200.0,
-                      padding: EdgeInsets.fromLTRB(8.0,70.0,8.0,8.0),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(10.0),
-                        border: Border.all(
-                          color: Colors.blue,
-                          width: 1.0
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            _name,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20.0,
-                              fontStyle: FontStyle.normal
-                            ),
-                          ),
-                          Text(
-                            FirebaseAuth.instance.currentUser.email,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14.0,
-                              fontStyle: FontStyle.normal
-                            ),
-                          ),
-                          SizedBox(height: 16.0,),
-                          FlatButton(
-                            color: Colors.blue,
-                            splashColor: Colors.white,
-                            highlightColor: Colors.white,
-                            padding: EdgeInsets.fromLTRB(4.0,4.0,4.0,4.0),
-                            shape: RoundedRectangleBorder(
-                              // side: BorderSide(color: Colors.black, width: 1),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              "Edit",
-                                style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16.0,
-                                fontStyle: FontStyle.normal
-                              ),
-                            ),
-                            onPressed: (){
-                              _showDialogName();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    splashColor: Colors.white,
-                    highlightColor: Colors.white,
-                    child:Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration:BoxDecoration(
-                        border: Border.all(
-                          color: Colors.blue,
-                          width: 2.0
-                        ),
-                        shape: BoxShape.circle, 
-                        color: Colors.blue,
-                      ),
-                      child: ClipOval(
-                        child: Hero(
-                          tag: "profilepic",
-                          child:CachedNetworkImage(
-                            imageUrl: _url,
-                            fit: BoxFit.fill,  
-                            progressIndicatorBuilder: (context, url, downloadProgress) => 
-                              CircularProgressIndicator(value: downloadProgress.progress
-                            ),
-                            placeholderFadeInDuration: Duration(
-                              seconds: 1,
-                            ),
-                            fadeInDuration: Duration(
-                              seconds: 1,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    onTap: (){
-                      Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) => ChangeProPic(_url)))
-                        .then((message){
-                          print(message);
-                          if(message!=null)
-                          {
-                            _helper.show(message);
-                            _helper.flushbar.show(context);
-                            _profileUrl();
-                          }                        
-                        });
-                    },
-                  )
-                ],
-              ),
-
-              SizedBox(height: 16.0,),
-              //below image,name and email
-              Container(
+      Container(
+        margin: EdgeInsets.only(top:70.0),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(8.0,50.0,8.0,8.0),
+              child: Container(
+                height: 200.0,
+                padding: EdgeInsets.fromLTRB(8.0,70.0,8.0,8.0),
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.fromLTRB(8.0,30.0,8.0,8.0),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.0),
-                    topRight: Radius.circular(20.0),
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 1.0
                   ),
-                  color: Colors.white
                 ),
                 child: Column(
-                  // mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _yourBlogs(),
-                        _savedBlogs(),
-                        _totalLikes(),
-                      ],
+                    Text(
+                      _name,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20.0,
+                        fontStyle: FontStyle.normal
+                      ),
                     ),
-                    SizedBox(
-                      height:30.0,
+                    Text(
+                      FirebaseAuth.instance.currentUser.email,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14.0,
+                        fontStyle: FontStyle.normal
+                      ),
                     ),
-                    _createRowWithOptions(Icons.email,"Change Email",Icons.chevron_right),
-                    _createRowWithOptions(Icons.lock_open,"Change Password",Icons.chevron_right),
-                    _createRowWithOptions(Icons.rate_review,"Rate us",Icons.chevron_right),
-                    _createRowWithOptions(Icons.contact_mail,"Contact us",Icons.chevron_right),
-                    _createRowWithOptions(Icons.table_chart,"Terms & Conditions",Icons.chevron_right),
+                    SizedBox(height: 16.0,),
+                    FlatButton(
+                      color: Colors.blue,
+                      splashColor: Colors.white,
+                      highlightColor: Colors.white,
+                      padding: EdgeInsets.fromLTRB(4.0,4.0,4.0,4.0),
+                      shape: RoundedRectangleBorder(
+                        // side: BorderSide(color: Colors.black, width: 1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        "Edit",
+                          style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16.0,
+                          fontStyle: FontStyle.normal
+                        ),
+                      ),
+                      onPressed: (){
+                        _showDialogName();
+                      },
+                    ),
                   ],
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+            InkWell(
+              splashColor: Colors.white,
+              highlightColor: Colors.white,
+              child:Container(
+                width: 100.0,
+                height: 100.0,
+                decoration:BoxDecoration(
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 2.0
+                  ),
+                  shape: BoxShape.circle, 
+                  color: Colors.blue,
+                ),
+                child: ClipOval(
+                  child: Hero(
+                    tag: "profilepic",
+                    child:CachedNetworkImage(
+                      imageUrl: _url,
+                      fit: BoxFit.fill,  
+                      progressIndicatorBuilder: (context, url, downloadProgress) => 
+                        CircularProgressIndicator(value: downloadProgress.progress
+                      ),
+                      placeholderFadeInDuration: Duration(
+                        seconds: 1,
+                      ),
+                      fadeInDuration: Duration(
+                        seconds: 1,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              onTap: (){
+                Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => ChangeProPic(_url)))
+                  .then((message){
+                    print(message);
+                    if(message!=null)
+                    {
+                      _helper.show(message);
+                      _helper.flushbar.show(context);
+                      _profileUrl();
+                    }                        
+                  });
+              },
+            ),
+            DraggableScrollableSheet(
+              initialChildSize: (1.0-300/MediaQuery.of(context).size.height),
+              maxChildSize: 0.7,
+              minChildSize: 0.3,
+              builder: (BuildContext context, myscrollController) {
+                return SingleChildScrollView(
+                  controller: myscrollController,
+                  child: Container(
+                    padding: EdgeInsets.only(top: 10.0,bottom: 30.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft:Radius.circular(20.0),
+                        topRight:Radius.circular(20.0),
+                      ),
+                    ),
+                    child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.expand_less,
+                          size: 30.0,
+                          color: Colors.black,
+                        ),
+                        SizedBox(height:20.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _yourBlogs(),
+                            _savedBlogs(),
+                            _totalLikes(),
+                          ],
+                        ),
+                        SizedBox(
+                          height:30.0,
+                        ),
+                        _createRowWithOptions(Icons.email,"Change Email",Icons.chevron_right),
+                        _createRowWithOptions(Icons.lock_open,"Change Password",Icons.chevron_right),
+                        _createRowWithOptions(Icons.rate_review,"Rate us",Icons.chevron_right),
+                        _createRowWithOptions(Icons.contact_mail,"Contact us",Icons.chevron_right),
+                        _createRowWithOptions(Icons.table_chart,"Terms & Conditions",Icons.chevron_right),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
+            // SizedBox(height: 16.0,),
+            //below image,name and email
+            // Container(
+            //   width: MediaQuery.of(context).size.width,
+            //   padding: EdgeInsets.fromLTRB(8.0,30.0,8.0,8.0),
+            //   decoration: BoxDecoration(
+            //     borderRadius: BorderRadius.only(
+            //       topLeft: Radius.circular(20.0),
+            //       topRight: Radius.circular(20.0),
+            //     ),
+            //     color: Colors.white
+            //   ),
+            //   child: Column(
+            //     // mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //         children: [
+            //           _yourBlogs(),
+            //           _savedBlogs(),
+            //           _totalLikes(),
+            //         ],
+            //       ),
+            //       SizedBox(
+            //         height:30.0,
+            //       ),
+            //       _createRowWithOptions(Icons.email,"Change Email",Icons.chevron_right),
+            //       _createRowWithOptions(Icons.lock_open,"Change Password",Icons.chevron_right),
+            //       _createRowWithOptions(Icons.rate_review,"Rate us",Icons.chevron_right),
+            //       _createRowWithOptions(Icons.contact_mail,"Contact us",Icons.chevron_right),
+            //       _createRowWithOptions(Icons.table_chart,"Terms & Conditions",Icons.chevron_right),
+            //     ],
+            //   ),
+            // )
       ),
     );
   }
