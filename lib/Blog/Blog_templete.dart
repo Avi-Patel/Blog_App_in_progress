@@ -369,8 +369,9 @@ class _BlogTileState extends State<BlogTile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white30,
-      appBar: AppBar(
+      backgroundColor: Colors.black,
+      appBar: _isLoading!=true?
+      AppBar(
         centerTitle: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -383,8 +384,10 @@ class _BlogTileState extends State<BlogTile> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: RaisedButton.icon(
+      )
+      :AppBar(),
+      floatingActionButton: _isLoading!=true?
+      RaisedButton.icon(
         color: Colors.green,
         elevation: 10.0,
         splashColor: Colors.white,
@@ -432,7 +435,9 @@ class _BlogTileState extends State<BlogTile> {
             }              
           }
         }
-      ),
+      )
+      :
+      Container(),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
       body:_isLoading==true?
       Center(child: _helper.spinkit,)
