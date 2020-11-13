@@ -21,22 +21,24 @@ class _FullImageState extends State<FullImage> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         color: Colors.black,
-        child: _type=="link"?
-        CachedNetworkImage(
-          imageUrl: _imageUrl,
-          progressIndicatorBuilder: (context, url, downloadProgress) => 
-            CircularProgressIndicator(value: downloadProgress.progress
+        child: InteractiveViewer(
+          child: _type=="link"?
+          CachedNetworkImage(
+            imageUrl: _imageUrl,
+            progressIndicatorBuilder: (context, url, downloadProgress) => 
+              CircularProgressIndicator(value: downloadProgress.progress
+            ),
+            placeholderFadeInDuration: Duration(
+              seconds: 1,
+            ),
+            fadeInDuration: Duration(
+              seconds: 1,
+            ),
+          )
+          :
+          Image.memory(
+            Base64Decoder().convert(_imageUrl.substring(23)),
           ),
-          placeholderFadeInDuration: Duration(
-            seconds: 1,
-          ),
-          fadeInDuration: Duration(
-            seconds: 1,
-          ),
-        )
-        :
-        Image.memory(
-          Base64Decoder().convert(_imageUrl.substring(23)),
         ),
       )
     );

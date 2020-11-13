@@ -543,8 +543,12 @@ class _FutureDataState extends State<FutureData> {
                                 Container(
                                   padding: EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
                                   decoration: BoxDecoration(
-                                    color: Colors.white70,
+                                    color: Colors.white12,
                                     borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 0.4,
+                                    ),
                                   ),
                                   child: Row(
                                     children: [
@@ -554,7 +558,7 @@ class _FutureDataState extends State<FutureData> {
                                         :
                                         "0.0",
                                         style: TextStyle(
-                                          color: Colors.black,
+                                          color: Colors.white,
                                           fontWeight: FontWeight.w500,
                                           fontSize: 14.0,
                                           fontStyle: FontStyle.normal
@@ -563,7 +567,7 @@ class _FutureDataState extends State<FutureData> {
                                       Icon(
                                         Icons.star,
                                         size: 20.0,
-                                        color: Colors.black,
+                                        color: Colors.white,
                                       )
                                     ],
                                   ),

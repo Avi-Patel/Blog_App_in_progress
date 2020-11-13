@@ -430,10 +430,15 @@ class _FullBlogState extends State<FullBlog> {
                     ),
                   ),
                 ),
+              
                 Container(
                   margin: EdgeInsets.only(top:175.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.0),
+                    border: Border.all(
+                      color:Colors.white,
+                      width:0.4,
+                    ),
                     color: Colors.black,
                   ),
                   child: Row(
@@ -487,10 +492,11 @@ class _FullBlogState extends State<FullBlog> {
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 8.0),
+              padding: const EdgeInsets.fromLTRB(8.0,30.0,8.0,8.0),
               child: Text(
                 // "Dknwd wj qd qkd qwjndq, dnw dwkj bdew ejkde dewj dewddwdwqadwdd",
                 _data.title,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
@@ -501,15 +507,19 @@ class _FullBlogState extends State<FullBlog> {
             ),
 
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0,horizontal: 8.0),
+              padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
                     padding: EdgeInsets.fromLTRB(8.0,4.0,8.0,4.0),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.white38,
+                      color: Colors.white12,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 0.4,
+                      ),
                     ),
                     child: Text(
                       _type,
@@ -524,8 +534,12 @@ class _FullBlogState extends State<FullBlog> {
                   Container(
                     padding: EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 4.0),
                     decoration: BoxDecoration(
-                      color: Colors.white70,
+                      color: Colors.white12,
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 0.4,
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -536,7 +550,7 @@ class _FullBlogState extends State<FullBlog> {
                           "0.0",
                           // "4.5",
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.white,
                             fontWeight: FontWeight.w500,
                             fontSize: 14.0,
                             fontStyle: FontStyle.normal
@@ -545,7 +559,7 @@ class _FullBlogState extends State<FullBlog> {
                         Icon(
                           Icons.star,
                           size: 20.0,
-                          color: Colors.black,
+                          color: Colors.white,
                         )
                       ],
                     ),
@@ -638,7 +652,7 @@ class _FullBlogState extends State<FullBlog> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child:ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(10.0),
                         child: CachedNetworkImage(
                           imageUrl: _data.photosUrl[index],
                           fit: BoxFit.fill,

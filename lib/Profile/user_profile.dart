@@ -1,12 +1,14 @@
 import 'package:blogging_app/Profile/change_password.dart';
 import 'package:blogging_app/Profile/change_pro_pic.dart';
 import 'package:blogging_app/Profile/personal_blog.dart';
+import 'package:blogging_app/Profile/rate_us.dart';
 import 'package:blogging_app/Profile/saved_blogs.dart';
 import 'package:blogging_app/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -364,7 +366,7 @@ class _UserProfileState extends State<UserProfile> {
           ],
         ),
       ),
-      onTap: ()
+      onTap: () async
       {
         if(name=="Change Password")
         {
@@ -377,6 +379,31 @@ class _UserProfileState extends State<UserProfile> {
               _helper.flushbar.show(context);
             }
           });
+        }
+        if(name=="Send Feedback")
+        {
+          Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => RateUs()))
+          .then((msg){
+            if(msg!=null)
+            {
+              _helper.show(msg);
+              _helper.flushbar.show(context);
+            }
+          });
+        }
+        if(name=="Contact us")
+        {
+          var url = 'mailto:bloggenixhelp@gmail.com?subject=''&body=''';
+          if (await canLaunch(url)) 
+          {
+            await launch(url);
+          } 
+          else 
+          {
+            _helper.show("Could not launch url");
+            _helper.flushbar.show(context);
+          }
         }
       },
     );
@@ -604,7 +631,7 @@ class _UserProfileState extends State<UserProfile> {
             ),
             DraggableScrollableSheet(
               initialChildSize: (1.0-300/MediaQuery.of(context).size.height),
-              maxChildSize: 0.7,
+              maxChildSize: 1.0,
               minChildSize: 0.3,
               builder: (BuildContext context, myscrollController) {
                 return SingleChildScrollView(
@@ -616,6 +643,8 @@ class _UserProfileState extends State<UserProfile> {
                       borderRadius: BorderRadius.only(
                         topLeft:Radius.circular(20.0),
                         topRight:Radius.circular(20.0),
+                        bottomLeft:Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0), 
                       ),
                     ),
                     child: Column(
@@ -640,7 +669,7 @@ class _UserProfileState extends State<UserProfile> {
                         ),
                         _createRowWithOptions(Icons.email,"Change Email",Icons.chevron_right),
                         _createRowWithOptions(Icons.lock_open,"Change Password",Icons.chevron_right),
-                        _createRowWithOptions(Icons.rate_review,"Rate us",Icons.chevron_right),
+                        _createRowWithOptions(Icons.rate_review,"Send Feedback",Icons.chevron_right),
                         _createRowWithOptions(Icons.contact_mail,"Contact us",Icons.chevron_right),
                         _createRowWithOptions(Icons.table_chart,"Terms & Conditions",Icons.chevron_right),
                       ],

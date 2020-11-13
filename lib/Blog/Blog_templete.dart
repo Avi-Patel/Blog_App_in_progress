@@ -355,6 +355,9 @@ class _BlogTileState extends State<BlogTile> {
             //value: "text content initial, if any",
             key: keyEditor,
             height: 500,
+            decoration: BoxDecoration(
+              color: Colors.white
+            ),
           ),
         ),
 
@@ -368,10 +371,12 @@ class _BlogTileState extends State<BlogTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _isLoading==true?
+    _helper.spinkit
+    :
+    Scaffold(
       backgroundColor: Colors.black,
-      appBar: _isLoading!=true?
-      AppBar(
+      appBar:AppBar(
         centerTitle: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -384,10 +389,8 @@ class _BlogTileState extends State<BlogTile> {
             ),
           ],
         ),
-      )
-      :AppBar(),
-      floatingActionButton: _isLoading!=true?
-      RaisedButton.icon(
+      ),
+      floatingActionButton: RaisedButton.icon(
         color: Colors.green,
         elevation: 10.0,
         splashColor: Colors.white,
@@ -435,13 +438,9 @@ class _BlogTileState extends State<BlogTile> {
             }              
           }
         }
-      )
-      :Container(),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
-      body:_isLoading==true?
-      Center(child: _helper.spinkit,)
-      :
-      PrimaryScrollController(
+      body:PrimaryScrollController(
         controller: _scrolctrl,
         child: CupertinoScrollbar(
           thickness: 20.0,
