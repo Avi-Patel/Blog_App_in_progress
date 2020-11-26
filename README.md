@@ -16,7 +16,19 @@ I built this App using flutter which provides the platform for blogging. User ca
         <li>Travel Blogs</li>
         <li>Political Blogs</li>
         <li>Business Blogs</li>
-    </ul
+    </ul>
+    <li>User can like and save(for later references) any blog.</li>
+    <li>User can rate any blog once.</li>
+    <li>User Profile</li>
+    <ul>
+        <li> Total #personal blogs, Total #saved blogs and Total Likes</li>
+        <li>change profile photo</li>
+        <li>change name</li>
+        <li>change password</li>
+        <li>Contact Us (user can send mail to specific recepient)</li>
+        <li>Rate App. User can rate app multiple time but older feedback will be overrided by new one.</li>
+    </ul>
+    <li> User can delete personal blog. User can remove any blog his/her saved blog section.</li>
 </ul>
 
 ## Screen Shots of App
