@@ -18,7 +18,12 @@ I built this App using flutter which provides the platform for blogging. User ca
     <img src="./images_app/full blog 1.jpg" width="310px" height="600"</img>
     <img src="./images_app/full blog 2.jpg" width="310px" height="600"</img>
 </span>
-## Contributing
+<div align="center">
+    <img src="./images_app/user profile.jpg" width="310px" height="600"</img> 
+    <img src="./images_app/profile bottom sheet.jpg" width="310px" height="600"</img>
+</div>
+
+<h2>Contributing</h2>
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 
