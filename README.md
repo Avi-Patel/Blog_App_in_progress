@@ -37,25 +37,25 @@ I built this App using flutter which provides the platform for blogging. User ca
 ## Screen Shots of App
 <div align="center">
     <span>
-        <img src="./images_app/Home_page.jpg" width="280px" height="500"</img> 
-        <img src="./images_app/Drawer.jpg" width="280px" height="500"</img>
-        <img src="./images_app/create blog.jpg" width="280px" height="500"</img>
+        <img src="./images_app/Home_page.jpg" width="250px" height="500"</img> 
+        <img src="./images_app/Drawer.jpg" width="250px" height="500"</img>
+        <img src="./images_app/create blog.jpg" width="250px" height="500"</img>
     </span>
 </div>
 
 <span align="center">
-    <img src="./images_app/Login.jpg" width="280px" height="500"</img> 
-    <img src="./images_app/Register.jpg" width="280px" height="500"</img>
-    <img src="./images_app/blog list.jpg" width="280px" height="500"</img>
+    <img src="./images_app/Login.jpg" width="250px" height="500"</img> 
+    <img src="./images_app/Register.jpg" width="250px" height="500"</img>
+    <img src="./images_app/blog list.jpg" width="250px" height="500"</img>
 </span>
 <span align="center">
-    <img src="./images_app/full blog.jpg" width="280px" height="500"</img> 
-    <img src="./images_app/full blog 1.jpg" width="280px" height="500"</img>
-    <img src="./images_app/full blog 2.jpg" width="280px" height="500"</img>
+    <img src="./images_app/full blog.jpg" width="250px" height="500"</img> 
+    <img src="./images_app/full blog 1.jpg" width="250px" height="500"</img>
+    <img src="./images_app/full blog 2.jpg" width="250px" height="500"</img>
 </span>
 <div align="center">
-    <img src="./images_app/user profile.jpg" width="280px" height="500"</img> 
-    <img src="./images_app/profile bottom sheet.jpg" width="280px" height="500"</img>
+    <img src="./images_app/user profile.jpg" width="250px" height="500"</img> 
+    <img src="./images_app/profile bottom sheet.jpg" width="250px" height="500"</img>
 </div>
 
 <h2>Contributing</h2>
