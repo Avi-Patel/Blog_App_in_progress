@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' as pull;
+import 'package:connectivity/connectivity.dart';
 
 // ignore: must_be_immutable
 class ShowSavedBlogs extends StatefulWidget {
@@ -144,29 +145,39 @@ class _StreambuilderState extends State<Streambuilder> {
 
   Future<void> _deleteSavedBlog(var index) async
   {
-    print(list[index].id);
-    print(type);
-    print(uid);
-    await FirebaseFirestore.instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        'Saved Blogs': FieldValue.increment(-1),
-        type : FieldValue.arrayRemove([list[index].id]),
-      })
-      .then((_){
-        print("Blog removed from your saved blogs");
-        _helper.show("Blog removed from your saved blogs");
-        _helper.flushbar.show(context);
-      })
-      .catchError((e)
+    Connectivity().checkConnectivity().then((value) async{
+      if(value.toString()=="ConnectivityResult.none")
       {
-        print("error : " +e.toString());
-        _helper.show("Opps!! Something went wrong");
-        _helper.flushbar.show(context);
-      });
-    setState(() {
-      list.removeAt(index);
+        _helper.show("You are not connected to internet");
+        _helper.flushbar..show(context);
+      }
+      else
+      {
+        print(list[index].id);
+        print(type);
+        print(uid);
+        await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            'Saved Blogs': FieldValue.increment(-1),
+            type : FieldValue.arrayRemove([list[index].id]),
+          })
+          .then((_){
+            print("Blog removed from your saved blogs");
+            _helper.show("Blog removed from your saved blogs");
+            _helper.flushbar.show(context);
+          })
+          .catchError((e)
+          {
+            print("error : " +e.toString());
+            _helper.show("Opps!! Something went wrong");
+            _helper.flushbar.show(context);
+          });
+        setState(() {
+          list.removeAt(index);
+        });
+      }
     });
   }
 

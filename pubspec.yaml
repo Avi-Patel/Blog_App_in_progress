@@ -51,6 +51,7 @@ dependencies:
   flutter_html:
   url_launcher:
   draggable_scrollbar:
+  connectivity:
 
 
 dev_dependencies:

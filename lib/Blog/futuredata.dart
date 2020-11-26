@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../helper_functions.dart';
 import 'blog_data_model.dart';
 import 'package:blogging_app/image_urls.dart';
+import 'package:connectivity/connectivity.dart';
 
 // ignore: must_be_immutable
 class FutureData extends StatefulWidget {
@@ -64,66 +65,78 @@ class _FutureDataState extends State<FutureData> {
 
   Future<void> _updatelikes() async
   {
-    if(uid==null)
-    {
-      _helper.show("You are not logged in!");
-      _helper.flushbar..show(context);
-      return;
-    }
-    if(liked==false)
-    {
-      await FirebaseFirestore
-      .instance
-      .collection(_type)
-      .doc(_data.id)
-      .update({
-        'likes':_data.likes+1,
-        'likeIds':FieldValue.arrayUnion([uid]),
-      }).then((value){
-        setState(() {
-          _data.likes=_data.likes+1;
-          liked=true;
-        });
-      });
-      await FirebaseFirestore.instance
-      .collection('users')
-      .doc(_data.userId)
-      .update({
-        'Total Likes': FieldValue.increment(1),
-      })
-      .catchError((e){
-        print(e);
-        _helper.show("Opps!! Some error occured. Try again");
+    Connectivity().checkConnectivity().then((value) async{
+      if(value.toString()=="ConnectivityResult.none")
+      {
+        _helper.show("You are not connected to internet");
         _helper.flushbar..show(context);
-      });
-    }
-    else
-    {
-      await FirebaseFirestore
-      .instance
-      .collection(_type)
-      .doc(_data.id)
-      .update({
-        'likes':_data.likes-1,
-        'likeIds': FieldValue.arrayRemove([uid]),
-      }).then((value){
-        setState(() {
-          _data.likes=_data.likes-1;
-          liked=false;
-        });
-      });
-      await FirebaseFirestore.instance
-      .collection('users')
-      .doc(_data.userId)
-      .update({
-        'Total Likes': FieldValue.increment(-1),
-      })
-      .catchError((e){
-        print(e);
-        _helper.show("Opps!! Some error occured. Try again");
-        _helper.flushbar..show(context);
-      });
-    }
+        return;
+      }
+      else
+      {
+        if(uid==null)
+        {
+          _helper.show("You are not logged in!");
+          _helper.flushbar..show(context);
+          return;
+        }
+        if(liked==false)
+        {
+          await FirebaseFirestore
+          .instance
+          .collection(_type)
+          .doc(_data.id)
+          .update({
+            'likes':_data.likes+1,
+            'likeIds':FieldValue.arrayUnion([uid]),
+          }).then((value){
+            setState(() {
+              _data.likes=_data.likes+1;
+              liked=true;
+            });
+          });
+          await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_data.userId)
+          .update({
+            'Total Likes': FieldValue.increment(1),
+          })
+          .catchError((e){
+            print(e);
+            _helper.show("Opps!! Some error occured. Try again");
+            _helper.flushbar..show(context);
+          });
+        }
+        else
+        {
+          await FirebaseFirestore
+          .instance
+          .collection(_type)
+          .doc(_data.id)
+          .update({
+            'likes':_data.likes-1,
+            'likeIds': FieldValue.arrayRemove([uid]),
+          }).then((value){
+            setState(() {
+              _data.likes=_data.likes-1;
+              liked=false;
+            });
+          });
+          await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_data.userId)
+          .update({
+            'Total Likes': FieldValue.increment(-1),
+          })
+          .catchError((e){
+            print(e);
+            _helper.show("Opps!! Some error occured. Try again");
+            _helper.flushbar..show(context);
+          });
+        }
+      }
+    });
+    
   }
 
   Future<void> _checksave() async
@@ -155,152 +168,178 @@ class _FutureDataState extends State<FutureData> {
 
   Future<void> _saveBlog() async
   {
-    if(uid==null)
-    {
-      _helper.show("You are not logged in!");
-      _helper.flushbar..show(context);
-      return;
-    }
-    if(saved==false)
-    {
-      await FirebaseFirestore
-      .instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        _type : FieldValue.arrayUnion([_data.id]),
-      }).then((value){
-        setState(() {
-          saved=true;
-        });
-      });
-
-      await FirebaseFirestore.instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        'Saved Blogs': FieldValue.increment(1),
-      })
-      .catchError((e){
-        print(e);
-        _helper.show("Opps!! Some error occured. Try again");
+    Connectivity().checkConnectivity().then((temp) async{
+      print(temp);
+      if(temp.toString()=="ConnectivityResult.none")
+      {
+        _helper.show("You are not connected to internet");
         _helper.flushbar..show(context);
-      });
-      
-    }
-    else
-    {
-      await FirebaseFirestore
-      .instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        _type: FieldValue.arrayRemove([_data.id]),
-      }).then((value){
-        setState(() {
-          saved=false;
-        });
-      });
-
-      await FirebaseFirestore.instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        'Saved Blogs': FieldValue.increment(-1),
-      })
-      .catchError((e){
-        print(e);
-        _helper.show("Opps!! Some error occured. Try again");
-        _helper.flushbar..show(context);
-      });
-    }
-  }
-
-  Future<void> _deletePersonalBlog() async
-  {
-    setState(() {
-      _isLoading=true;
-    });
-    // var doc=await FirebaseFirestore.instance
-    //   .collection(_type)
-    //   .doc(_data.id)
-    //   .get();
-    // var likes=doc.data()['likes'];
-    var likes=_data.likes;
-    await FirebaseFirestore.instance
-      .collection('users')
-      .get()
-      .then((snapshot){
-        snapshot.docs.forEach((user) {
-          if(user.data().containsKey(_type))
-          {
-            List ids=user.data()[_type];
-            ids.forEach((element) async{
-              if(element==_data.id) 
-              {
-                await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(user.id)
-                  .update({
-                    _type : FieldValue.arrayRemove([_data.id]),
-                    'Saved Blogs' : FieldValue.increment(-1),
-                  })
-                  .catchError((e){
-                    print("error : " +e.toString());
-                    _helper.show("Opps!! Something went wrong");
-                    _helper.flushbar.show(context);
-                    setState(() {
-                      _isLoading=false;
-                    });
-                  });
-              }
+        print("You are not connected to internet");
+      }
+      else
+      {
+        if(uid==null)
+        {
+          _helper.show("You are not logged in!");
+          _helper.flushbar..show(context);
+          return;
+        }
+        if(saved==false)
+        {
+          await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            _type : FieldValue.arrayUnion([_data.id]),
+          }).then((value){
+            setState(() {
+              saved=true;
             });
-          } 
-        });
-      })
-      .catchError((e){
-        print("error : " +e.toString());
-        _helper.show("Opps!! Something went wrong");
-        _helper.flushbar.show(context);
-        setState(() {
-          _isLoading=false;
-        });
-      });
-    for(int i=0;i<_data.photosUrl.length;i++)
-    {
-      FirebaseStorage.instance
-        .getReferenceFromUrl(_data.photosUrl[i])
-        .then((res) {
-          res.delete().then((res) {
-            print("Deleted!");
-            Navigator.of(context).pop("Photo deleted:).It will reflact in a moment.");
+          });
+
+          await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            'Saved Blogs': FieldValue.increment(1),
           })
           .catchError((e){
             print(e);
             _helper.show("Opps!! Some error occured. Try again");
             _helper.flushbar..show(context);
           });
-        })
-        .catchError((e){
-          print(e);
-          _helper.show("Opps!! Some error occured. Try again");
-          _helper.flushbar..show(context);
-        });
-    }
-    await FirebaseFirestore.instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        'Total Likes': FieldValue.increment(-likes),
-        'Your Blogs' : FieldValue.increment(-1),
-      });
-    await FirebaseFirestore.instance
-      .collection(_type)
-      .doc(_data.id)
-      .delete();
-    setState(() {
-      _isLoading=false;
+          
+        }
+        else
+        {
+          await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            _type: FieldValue.arrayRemove([_data.id]),
+          }).then((value){
+            setState(() {
+              saved=false;
+            });
+          });
+
+          await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            'Saved Blogs': FieldValue.increment(-1),
+          })
+          .catchError((e){
+            print(e);
+            _helper.show("Opps!! Some error occured. Try again");
+            _helper.flushbar..show(context);
+          });
+        }
+      }
     });
+    
+  }
+
+  Future<void> _deletePersonalBlog() async
+  {
+    Connectivity().checkConnectivity().then((temp) async{
+      print(temp);
+      if(temp.toString()=="ConnectivityResult.none")
+      {
+        _helper.show("You are not connected to internet");
+        _helper.flushbar..show(context);
+        print("You are not connected to internet");
+      }
+      else
+      {
+        setState(() {
+          _isLoading=true;
+        });
+        // var doc=await FirebaseFirestore.instance
+        //   .collection(_type)
+        //   .doc(_data.id)
+        //   .get();
+        // var likes=doc.data()['likes'];
+        var likes=_data.likes;
+        await FirebaseFirestore.instance
+          .collection('users')
+          .get()
+          .then((snapshot){
+            snapshot.docs.forEach((user) {
+              if(user.data().containsKey(_type))
+              {
+                List ids=user.data()[_type];
+                ids.forEach((element) async{
+                  if(element==_data.id) 
+                  {
+                    await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(user.id)
+                      .update({
+                        _type : FieldValue.arrayRemove([_data.id]),
+                        'Saved Blogs' : FieldValue.increment(-1),
+                      })
+                      .catchError((e){
+                        print("error : " +e.toString());
+                        _helper.show("Opps!! Something went wrong");
+                        _helper.flushbar.show(context);
+                        setState(() {
+                          _isLoading=false;
+                        });
+                      });
+                  }
+                });
+              } 
+            });
+          })
+          .catchError((e){
+            print("error : " +e.toString());
+            _helper.show("Opps!! Something went wrong");
+            _helper.flushbar.show(context);
+            setState(() {
+              _isLoading=false;
+            });
+          });
+        for(int i=0;i<_data.photosUrl.length;i++)
+        {
+          FirebaseStorage.instance
+            .getReferenceFromUrl(_data.photosUrl[i])
+            .then((res) {
+              res.delete().then((res) {
+                print("Deleted!");
+                Navigator.of(context).pop("Photo deleted:).It will reflact in a moment.");
+              })
+              .catchError((e){
+                print(e);
+                _helper.show("Opps!! Some error occured. Try again");
+                _helper.flushbar..show(context);
+              });
+            })
+            .catchError((e){
+              print(e);
+              _helper.show("Opps!! Some error occured. Try again");
+              _helper.flushbar..show(context);
+            });
+        }
+        await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            'Total Likes': FieldValue.increment(-likes),
+            'Your Blogs' : FieldValue.increment(-1),
+          });
+        await FirebaseFirestore.instance
+          .collection(_type)
+          .doc(_data.id)
+          .delete();
+        setState(() {
+          _isLoading=false;
+        });
+      }
+    });
+    
   }
 
   Future<void> _deleteSavedBlog() async

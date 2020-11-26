@@ -25,7 +25,7 @@ class _UserProfileState extends State<UserProfile> {
   var _savedblogs=0;
   var _totallikes=0;
   var _name="...";
-  var isLoading=false;
+  var _isLoading=false;
 
   Future<void> _profileUrl() async
   {
@@ -129,7 +129,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _updateName() async
   {
     setState(() {
-      isLoading=true;
+      _isLoading=true;
     });
     await FirebaseFirestore.instance
       .collection('users')
@@ -139,14 +139,14 @@ class _UserProfileState extends State<UserProfile> {
       })
       .catchError((e){
         setState(() {
-          isLoading=false;
+          _isLoading=false;
         });
         print("error : "+e.toString());
         _helper.show("Opps!! something went wrong");
         _helper.flushbar.show(context);
       });
     setState(() {
-      isLoading=false;
+      _isLoading=false;
     });
   }
    
@@ -494,7 +494,7 @@ class _UserProfileState extends State<UserProfile> {
               onTap: (){
                 setState(() {
                   _name=value;
-                  // isLoading=true;
+                  // _isLoading=true;
                 });
                 _updateName();
                 Navigator.of(context).pop();
@@ -513,7 +513,7 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
-      body: isLoading==true?
+      body: _isLoading==true?
       _helper.spinkit
       :
       Container(

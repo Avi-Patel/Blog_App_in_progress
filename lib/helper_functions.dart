@@ -2,7 +2,7 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
+import 'package:connectivity/connectivity.dart';
 class Helper
 {
   var flushbar;
@@ -34,4 +34,19 @@ class Helper
     size: 50.0,
     duration: Duration(milliseconds: 2000),
   );
+
+  bool checkConnectivity()
+  {
+    bool connection=true;
+    Connectivity().checkConnectivity().then((value){
+      if(value.toString()=="ConnectivityResult.none")
+      {
+        connection=false;
+      }
+    })
+    .then((_){
+      print(connection);
+      return connection;
+    });
+  }
 }

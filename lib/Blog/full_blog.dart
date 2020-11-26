@@ -11,7 +11,7 @@ import 'package:blogging_app/image_urls.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:connectivity/connectivity.dart';
 
 
 // ignore: must_be_immutable
@@ -32,12 +32,9 @@ class _FullBlogState extends State<FullBlog> {
 
   Urls _urls= Urls();
   Helper _helper=Helper();
-  bool liked=false;
+  bool liked=false,saved=false,_hasrated=false,_isLoading=false;
   String type;
-  var uid;
-  bool  saved=false;
-  var _rating=1.0;
-  bool _hasrated=false;
+  var uid,_rating=1.0;
   
   Future<void> _checklike() async
   {
@@ -65,66 +62,76 @@ class _FullBlogState extends State<FullBlog> {
 
   Future<void> _updatelikes() async
   {
-    if(uid==null)
-    {
-      _helper.show("You are not logged in!");
-      _helper.flushbar..show(context);
-      return;
-    }
-    if(liked==false)
-    {
-      await FirebaseFirestore
-      .instance
-      .collection(_type)
-      .doc(_data.id)
-      .update({
-        'likes':_data.likes+1,
-        'likeIds':FieldValue.arrayUnion([uid]),
-      }).then((value){
-        setState(() {
-          _data.likes=_data.likes+1;
-          liked=true;
-        });
-      });
-      await FirebaseFirestore.instance
-      .collection('users')
-      .doc(_data.userId)
-      .update({
-        'Total Likes': FieldValue.increment(1),
-      })
-      .catchError((e){
-        print(e);
-        _helper.show("Opps!! Some error occured. Try again");
+    Connectivity().checkConnectivity().then((value) async{
+      if(value.toString()=="ConnectivityResult.none")
+      {
+        _helper.show("You are not connected to internet");
         _helper.flushbar..show(context);
-      });
-    }
-    else
-    {
-      await FirebaseFirestore
-      .instance
-      .collection(_type)
-      .doc(_data.id)
-      .update({
-        'likes':_data.likes-1,
-        'likeIds': FieldValue.arrayRemove([uid]),
-      }).then((value){
-        setState(() {
-          _data.likes=_data.likes-1;
-          liked=false;
-        });
-      });
-      await FirebaseFirestore.instance
-      .collection('users')
-      .doc(_data.userId)
-      .update({
-        'Total Likes': FieldValue.increment(-1),
-      })
-      .catchError((e){
-        print(e);
-        _helper.show("Opps!! Some error occured. Try again");
-        _helper.flushbar..show(context);
-      });
-    }
+      }
+      else
+      {
+        if(uid==null)
+        {
+          _helper.show("You are not logged in!");
+          _helper.flushbar..show(context);
+          return;
+        }
+        if(liked==false)
+        {
+          await FirebaseFirestore
+          .instance
+          .collection(_type)
+          .doc(_data.id)
+          .update({
+            'likes':_data.likes+1,
+            'likeIds':FieldValue.arrayUnion([uid]),
+          }).then((value){
+            setState(() {
+              _data.likes=_data.likes+1;
+              liked=true;
+            });
+          });
+          await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_data.userId)
+          .update({
+            'Total Likes': FieldValue.increment(1),
+          })
+          .catchError((e){
+            print(e);
+            _helper.show("Opps!! Some error occured. Try again");
+            _helper.flushbar..show(context);
+          });
+        }
+        else
+        {
+          await FirebaseFirestore
+          .instance
+          .collection(_type)
+          .doc(_data.id)
+          .update({
+            'likes':_data.likes-1,
+            'likeIds': FieldValue.arrayRemove([uid]),
+          }).then((value){
+            setState(() {
+              _data.likes=_data.likes-1;
+              liked=false;
+            });
+          });
+          await FirebaseFirestore.instance
+          .collection('users')
+          .doc(_data.userId)
+          .update({
+            'Total Likes': FieldValue.increment(-1),
+          })
+          .catchError((e){
+            print(e);
+            _helper.show("Opps!! Some error occured. Try again");
+            _helper.flushbar..show(context);
+          });
+        }
+      }
+    });
   }
 
   Future<void> _checksave() async
@@ -154,62 +161,73 @@ class _FullBlogState extends State<FullBlog> {
 
   Future<void> _saveBlog() async
   {
-    if(uid==null)
-    {
-      _helper.show("You are not logged in!");
-      _helper.flushbar..show(context);
-      return;
-    }
-    if(saved==false)
-    {
-      await FirebaseFirestore
-      .instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        _type : FieldValue.arrayUnion([_data.id]),
-      }).then((value){
-        setState(() {
-          saved=true;
-        });
-      });
-      await FirebaseFirestore.instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        'Saved Blogs': FieldValue.increment(1),
-      })
-      .catchError((e){
-        print(e);
-        _helper.show("Opps!! Some error occured. Try again");
+    Connectivity().checkConnectivity().then((value) async{
+      if(value.toString()=="ConnectivityResult.none")
+      {
+        _helper.show("You are not connected to internet");
         _helper.flushbar..show(context);
-      });
-    }
-    else
-    {
-      await FirebaseFirestore
-      .instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        _type: FieldValue.arrayRemove([_data.id]),
-      }).then((value){
-        setState(() {
-          saved=false;
-        });
-      });
-      await FirebaseFirestore.instance
-      .collection('users')
-      .doc(uid)
-      .update({
-        'Saved Blogs': FieldValue.increment(-1),
-      })
-      .catchError((e){
-        print(e);
-        _helper.show("Opps!! Some error occured. Try again");
-        _helper.flushbar..show(context);
-      });
-    }
+      }
+      else
+      {
+        if(uid==null)
+        {
+          _helper.show("You are not logged in!");
+          _helper.flushbar..show(context);
+          return;
+        }
+        if(saved==false)
+        {
+          await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            _type : FieldValue.arrayUnion([_data.id]),
+          }).then((value){
+            setState(() {
+              saved=true;
+            });
+          });
+          await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            'Saved Blogs': FieldValue.increment(1),
+          })
+          .catchError((e){
+            print(e);
+            _helper.show("Opps!! Some error occured. Try again");
+            _helper.flushbar..show(context);
+          });
+        }
+        else
+        {
+          await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            _type: FieldValue.arrayRemove([_data.id]),
+          }).then((value){
+            setState(() {
+              saved=false;
+            });
+          });
+          await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({
+            'Saved Blogs': FieldValue.increment(-1),
+          })
+          .catchError((e){
+            print(e);
+            _helper.show("Opps!! Some error occured. Try again");
+            _helper.flushbar..show(context);
+          });
+        }
+      }
+    });
+    
   }
 
   Future<void> _checkrated() async
@@ -237,33 +255,52 @@ class _FullBlogState extends State<FullBlog> {
   }
   Future<void> _updateRating() async
   {
-    await FirebaseFirestore.instance
-      .collection(_type)
-      .doc(_data.id)
-      .update({
-        'ratingIds': FieldValue.arrayUnion([uid]),
-      })
-      .then((_) async{
-        await FirebaseFirestore.instance
-        .collection(_type)
-        .doc(_data.id)
-        .update({
-          'star': FieldValue.increment(_rating),
-          '#ratings': FieldValue.increment(1),
-        })
-        .then((_){
-          setState(() {
-            _data.star=_data.star+_rating;
-            _data.numOfRating=_data.numOfRating+1;
-            _hasrated=true;
-          });
-        })
-        .catchError((e){
-          print("error"+e.toString());
-          _helper.show("Opps!! Something went wrong");
-          _helper.flushbar.show(context);
+    Connectivity().checkConnectivity().then((value) async{
+      if(value.toString()=="ConnectivityResult.none")
+      {
+        _helper.show("You are not connected to internet");
+        _helper.flushbar..show(context);
+      }
+      else
+      {
+        setState(() {
+          _isLoading=true;
         });
-      }); 
+        await FirebaseFirestore.instance
+          .collection(_type)
+          .doc(_data.id)
+          .update({
+            'ratingIds': FieldValue.arrayUnion([uid]),
+          })
+          .then((_) async{
+            await FirebaseFirestore.instance
+            .collection(_type)
+            .doc(_data.id)
+            .update({
+              'star': FieldValue.increment(_rating),
+              '#ratings': FieldValue.increment(1),
+            })
+            .then((_){
+              setState(() {
+                _data.star=_data.star+_rating;
+                _data.numOfRating=_data.numOfRating+1;
+                _hasrated=true;
+              });
+            })
+            .catchError((e){
+              print("error"+e.toString());
+              setState(() {
+                _isLoading=false;
+              });
+              _helper.show("Opps!! Something went wrong");
+              _helper.flushbar.show(context);
+            });
+          }); 
+        setState(() {
+          _isLoading=false;
+        });
+      }
+    });
   }
 
   Future<String> _profileUrl() async
@@ -391,9 +428,8 @@ class _FullBlogState extends State<FullBlog> {
                   style: new TextStyle(color:Colors.white,fontWeight: FontWeight.bold),
                 ),
                 onPressed:(){
-                  _updateRating().whenComplete((){
-                    Navigator.of(context).pop();
-                  });
+                  _updateRating();
+                  Navigator.of(context).pop();
                 },
               ),
             ),
@@ -499,7 +535,7 @@ class _FullBlogState extends State<FullBlog> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                   fontSize: 20.0,
                   fontStyle: FontStyle.normal
                 ),
@@ -507,7 +543,7 @@ class _FullBlogState extends State<FullBlog> {
             ),
 
             Padding(
-              padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,20.0),
+              padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -567,7 +603,7 @@ class _FullBlogState extends State<FullBlog> {
                 ],
               ),
             ),
-
+            Divider(color: Colors.white,),
             ListTile(
               leading: FutureBuilder(
                 future: _profileUrl(),

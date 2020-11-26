@@ -143,7 +143,7 @@ class _BlogTileState extends State<BlogTile> {
       child: Container(
         height: 150,
         width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.all(4.0),
+        margin: EdgeInsets.fromLTRB(4.0,10.0,4.0,0.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
@@ -162,21 +162,20 @@ class _BlogTileState extends State<BlogTile> {
 
   Widget _addText(String text,double size,Color clr)
   {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(4.0,8.0,4.0,0.0),
-      child: Container(
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(4.0),
-        decoration: BoxDecoration(
-          color: clr,
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize:size,
-          ),
+    return Container(
+      alignment: Alignment.center,
+      margin: EdgeInsets.fromLTRB(4.0,10.0,4.0,0.0),
+      padding: EdgeInsets.fromLTRB(4.0,2.0,4.0,2.0),
+      decoration: BoxDecoration(
+        color: clr,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize:size,
+          color:Colors.black
         ),
       ),
     );
@@ -290,7 +289,8 @@ class _BlogTileState extends State<BlogTile> {
           ),
         ),
 
-        _addText("Add your photos for gallery below",16.0,Colors.blue),
+        SizedBox(height: 10.0),
+        _addText("Add your photos for gallery below",10.0,Colors.blue),
 
         _blog.getSize() !=0?  ListView.builder(
           itemCount: _blog.getSize(),
@@ -304,7 +304,7 @@ class _BlogTileState extends State<BlogTile> {
                 child: new Container(
                   height: MediaQuery.of(context).size.width,
                   width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.fromLTRB(4.0,8.0,4.0,0.0),
+                  margin: EdgeInsets.fromLTRB(4.0,10.0,4.0,0.0),
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.blue,
@@ -327,7 +327,7 @@ class _BlogTileState extends State<BlogTile> {
             );
           }
         )
-        :SizedBox(height: 1.0,),
+        :SizedBox(height: 0.0,),
 
 
         _blog.getSize()==5? 
@@ -360,11 +360,9 @@ class _BlogTileState extends State<BlogTile> {
             ),
           ),
         ),
-
         SizedBox(
           height: 200.0,
         )
-
       ],
     );
   }
