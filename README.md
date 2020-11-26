@@ -35,11 +35,13 @@ I built this App using flutter which provides the platform for blogging. User ca
 </ul>
 
 ## Screen Shots of App
-<span align="center">
-    <img src="./images_app/Home_page.jpg" width="280px" height="500"</img> 
-    <img src="./images_app/Drawer.jpg" width="280px" height="500"</img>
-    <img src="./images_app/create blog.jpg" width="280px" height="500"</img>
-</span>
+<div align="center">
+    <span>
+        <img src="./images_app/Home_page.jpg" width="280px" height="500"</img> 
+        <img src="./images_app/Drawer.jpg" width="280px" height="500"</img>
+        <img src="./images_app/create blog.jpg" width="280px" height="500"</img>
+    </span>
+</div>
 
 <span align="center">
     <img src="./images_app/Login.jpg" width="280px" height="500"</img> 
