@@ -13,8 +13,8 @@ I built this App using flutter which provides the platform for blogging. User ca
     <ul>
         <li>Technical Blogs</li>
         <li>Non-Technical Blogs</li>
-        <li>Interview Experience</li>
-        <li>Internship Experience</li>
+        <li>Interview Experiences</li>
+        <li>Internship Experiences</li>
         <li>Food Blogs</li>
         <li>Travel Blogs</li>
         <li>Political Blogs</li>
@@ -29,9 +29,9 @@ I built this App using flutter which provides the platform for blogging. User ca
         <li>change name</li>
         <li>change password</li>
         <li>Contact Us (user can send mail to specific recepient)</li>
-        <li>Rate App. User can rate app multiple time but older feedback will be overrided by new one.</li>
+        <li>Rate App. User can rate app multiple times but older feedback will be overrided by new one.</li>
     </ul>
-    <li> User can delete personal blog. User can remove any blog from his/her saved blog section.</li>
+    <li> User can delete personal blog.Also User can remove blog from his/her saved blog section.</li>
 </ul>
 
 ## Screen Shots of App
