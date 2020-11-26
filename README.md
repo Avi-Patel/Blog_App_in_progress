@@ -44,7 +44,7 @@ I built this App using flutter which provides the platform for blogging. User ca
 </div>
 <div align="center">
     <span>
-        img src="./images_app/Login.jpg" width="250px" height="500"</img> 
+        <img src="./images_app/Login.jpg" width="250px" height="500"</img> 
         <img src="./images_app/Register.jpg" width="250px" height="500"</img>
         <img src="./images_app/blog list.jpg" width="250px" height="500"</img>
     </span>
