@@ -60,6 +60,7 @@ I built this App using flutter which provides the platform for blogging. User ca
     <span>
         <img src="./images_app/user profile.jpg" width="250px" height="500"</img> 
         <img src="./images_app/profile bottom sheet.jpg" width="250px" height="500"</img>
+        <img src="./images_app/rate app.jpg" width="250px" height="500"</img>
     </span>
 </div>
 
