@@ -6,6 +6,9 @@ I built this App using flutter which provides the platform for blogging. User ca
 <ul>
     <li>Login and Register</li>
     <li>User can create new blog and can upload it. All Blogs are public.</li>
+    <ul>
+        <li>User can add upto 5 photos in blog while creating. Separate text editor to write rich text. Once uploaded, any personal blog can not be changed. How ever i am thinking to implement this feature of 'change your personal blog' in future.</li>
+    </ul>
     <li>8 different categorywise blog.</li>
     <ul>
         <li>Technical Blogs</li>
@@ -28,7 +31,7 @@ I built this App using flutter which provides the platform for blogging. User ca
         <li>Contact Us (user can send mail to specific recepient)</li>
         <li>Rate App. User can rate app multiple time but older feedback will be overrided by new one.</li>
     </ul>
-    <li> User can delete personal blog. User can remove any blog his/her saved blog section.</li>
+    <li> User can delete personal blog. User can remove any blog from his/her saved blog section.</li>
 </ul>
 
 ## Screen Shots of App
