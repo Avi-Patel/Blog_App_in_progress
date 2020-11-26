@@ -13,6 +13,11 @@ I built this App using flutter which provides the platform for blogging. User ca
     <img src="./images_app/Register.jpg" width="310px" height="600"</img>
     <img src="./images_app/blog list.jpg" width="310px" height="600"</img>
 </span>
+<span align="center">
+    <img src="./images_app/full blog.jpg" width="310px" height="600"</img> 
+    <img src="./images_app/full blog 1.jpg" width="310px" height="600"</img>
+    <img src="./images_app/full blog 2.jpg" width="310px" height="600"</img>
+</span>
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
