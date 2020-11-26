@@ -4,3 +4,6 @@ I built this App using flutter which provides the platform for blogging. User ca
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## Screen Shots of App
+![Home Page](./images_app/Home_page.jpg)
