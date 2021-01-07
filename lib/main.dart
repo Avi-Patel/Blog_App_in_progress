@@ -55,6 +55,7 @@ class _HomePageState extends State<HomePage> {
   String _email;
   String _uid;
   User _user;
+  bool _isLoading=false;
   String _url="https://png.pngitem.com/pimgs/s/506-5067022_sweet-shap-profile-placeholder-hd-png-download.png";
   Urls _urls=Urls();
   var blogArr = [
@@ -79,7 +80,7 @@ class _HomePageState extends State<HomePage> {
   ];
   
 
-  void _singin() {
+  void _signIn() {
     Navigator.of(context).pop();
     Navigator.of(context)
       .push(MaterialPageRoute(builder: (context) => Login()))
@@ -177,6 +178,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _isLoading=true;      
+    });
     _user=FirebaseAuth.instance.currentUser;
     if(_user==null || _user.emailVerified==false)
     {
@@ -184,8 +188,16 @@ class _HomePageState extends State<HomePage> {
         _user=null;
       });
     }
-    _getDetails().then((_){
-      _profileUrl();
+    _getDetails().then((_) async{
+      await _profileUrl();
+      setState(() {
+        _isLoading=false;        
+      });
+    })
+    .catchError((e){
+      setState(() {
+        _isLoading=false;        
+      });
     });
     // print(_name);
     // print(_email);
@@ -194,7 +206,10 @@ class _HomePageState extends State<HomePage> {
 
 
   Widget _drawer() {
-    return Drawer(
+    return _isLoading?
+    _helper.spinkit
+    :
+    Drawer(
       child: Container(
         color: Colors.black,
         child: ListView(
@@ -279,7 +294,7 @@ class _HomePageState extends State<HomePage> {
                 Icons.account_box,
                 color: Colors.white,
               ),
-              onTap: () => _uid == null ? _singin() : _signOut(),
+              onTap: () => _uid == null ? _signIn() : _signOut(),
             ),
             Divider(
               color: Colors.blue,
